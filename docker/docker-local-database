@@ -1,0 +1,1 @@
+docker run -dit --name mpk-operator-db --restart=always -e MYSQL_ROOT_PASSWORD=rootPassword -e POSTGRES_DB=mpk -e POSTGRES_USER=dev -e POSTGRES_PASSWORD=dev -p 5432:5432 postgres:14.5
