@@ -27,15 +27,43 @@
     </changeSet>
     <changeSet id="user-role-table-create" author="KonradKedziorek">
         <sql>
-            CREATE TABLE "user_role"
+            CREATE TABLE "user_roles"
             (
-                user_id     bigint    NOT NULL,
-                role_id     bigint    NOT NULL,
-                PRIMARY KEY (user_id, role_id),
+                user_id      bigint    NOT NULL,
+                roles_id     bigint    NOT NULL,
+                PRIMARY KEY (user_id, roles_id),
                 FOREIGN KEY (user_id) REFERENCES "user"(id),
-                FOREIGN KEY (role_id) REFERENCES "role"(id)
+                FOREIGN KEY (roles_id) REFERENCES "role"(id)
             );
         </sql>
+    </changeSet>
+    <changeSet id="add-AutoIncrement-to-role-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="role"/>
+    </changeSet>
+    <changeSet id="add-AutoIncrement-to-user-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="user"/>
+    </changeSet>
+    <changeSet id="add-AutoIncrement-to-user_role-user_id" author="Konrad Kedziorek" >
+    <addAutoIncrement columnDataType="bigint"
+                      columnName="user_id"
+                      incrementBy="1"
+                      schemaName="public"
+                      tableName="user_roles"/>
+    </changeSet>
+    <changeSet id="add-AutoIncrement-to-user_role-roles_id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="roles_id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="user_roles"/>
     </changeSet>
 
 </databaseChangeLog>
