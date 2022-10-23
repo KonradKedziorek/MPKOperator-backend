@@ -16,6 +16,8 @@
     <properties>
         <java.version>11</java.version>
         <liquibase-core.version>4.16.0</liquibase-core.version>
+        <spring-security-web.version>5.7.3</spring-security-web.version>
+        <spring-security-config.version>3.2.0.RELEASE</spring-security-config.version>
     </properties>
     <dependencies>
         <dependency>
@@ -26,7 +28,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -53,6 +54,18 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase-core.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${spring-security-web.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${spring-security-config.version}</version>
         </dependency>
     </dependencies>
 
