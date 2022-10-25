@@ -65,5 +65,12 @@
                           schemaName="public"
                           tableName="user_roles"/>
     </changeSet>
+    <changeSet  id="change-length-of-password" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="password"
+                newDataType="varchar(256)"
+                schemaName="public"
+                tableName="user"/>
+    </changeSet>
 
 </databaseChangeLog>
