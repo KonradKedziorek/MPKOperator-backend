@@ -20,4 +20,24 @@
                               tableName="user"/>
     </changeSet>
 
+    <changeSet id="add_complaint_table" author="Konrad Kedziorek">
+        <createTable tableName="complaint">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="date_of_event" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="place_of_event" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="complaint_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
