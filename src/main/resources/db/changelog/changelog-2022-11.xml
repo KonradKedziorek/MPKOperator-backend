@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_pesel_and_phone_number_columns" author="KonradKedziorek">
+        <addColumn schemaName= "public"
+                   tableName="user" >
+            <column name="pesel"
+                    type="varchar(50)"/>
+            <column name="phone_number"
+                    type="varchar(50)" >
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add_not_null_constraint_to_pesel_column" author="KonradKedziorek">
+        <addNotNullConstraint columnName="pesel"
+                              schemaName="public"
+                              tableName="user"/>
+    </changeSet>
+
+</databaseChangeLog>

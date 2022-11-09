@@ -1,4 +1,4 @@
-package pl.kedziorek.mpkoperator.filter;
+package pl.kedziorek.mpkoperator.config.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

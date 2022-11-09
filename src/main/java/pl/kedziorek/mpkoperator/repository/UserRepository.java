@@ -3,6 +3,12 @@ package pl.kedziorek.mpkoperator.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import pl.kedziorek.mpkoperator.domain.User;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
+    Boolean existsUserByUsername(String username);
+    Boolean existsUserByEmail(String email);
+    Boolean existsUserByPesel(String pesel);
+    Boolean existsUserByPhoneNumber(String pesel);
 }

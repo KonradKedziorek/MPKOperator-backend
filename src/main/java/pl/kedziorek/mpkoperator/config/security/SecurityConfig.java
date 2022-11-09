@@ -1,4 +1,4 @@
-package pl.kedziorek.mpkoperator.security;
+package pl.kedziorek.mpkoperator.config.security;
 
 
 import lombok.RequiredArgsConstructor;
@@ -11,11 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.kedziorek.mpkoperator.filter.CustomAuthenticationFilter;
-import pl.kedziorek.mpkoperator.filter.CustomAuthorizationFilter;
+import pl.kedziorek.mpkoperator.config.filter.CustomAuthenticationFilter;
+import pl.kedziorek.mpkoperator.config.filter.CustomAuthorizationFilter;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -24,6 +23,7 @@ import static org.springframework.http.HttpMethod.POST;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -40,8 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers("/api/login/**", "/api/token/refresh/**").permitAll()
-                .antMatchers(GET, "/api/users/**").hasAnyAuthority("ROLE_USER")   // TODO Tak przyznajemy permisje dla odpowiednich roli
-                .antMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
+                .antMatchers(GET, "/api/users/**").permitAll()             //.hasAnyAuthority("ROLE_USER")   // TODO Tak przyznajemy permisje dla odpowiednich roli
+                .antMatchers(GET, "/api/role/addtouser").permitAll()   // TODO Tak przyznajemy permisje dla odpowiednich roli
+                .antMatchers(POST, "/api/user/save/**").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

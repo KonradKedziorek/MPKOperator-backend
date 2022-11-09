@@ -12,10 +12,4 @@ public class MpkOperatorApplication {
     public static void main(String[] args) {
         SpringApplication.run(MpkOperatorApplication.class, args);
     }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 }
