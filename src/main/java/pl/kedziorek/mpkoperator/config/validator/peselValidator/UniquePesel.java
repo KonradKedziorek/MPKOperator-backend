@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = UniquePeselValidator.class)
 @Retention(RUNTIME)
 public @interface UniquePesel {
-    String message() default "User with this pesel already exist!";
+    String message();
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }

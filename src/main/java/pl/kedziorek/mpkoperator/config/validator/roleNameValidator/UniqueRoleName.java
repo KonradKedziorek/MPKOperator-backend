@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = UniqueRoleNameValidator.class)
 @Retention(RUNTIME)
 public @interface UniqueRoleName {
-    String message() default "This role already exist!";
+    String message();
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }

@@ -18,7 +18,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @UniqueRoleName
+    @NotBlank(message = "Role name is mandatory")
+    @UniqueRoleName(message = "This role already exist!")
     private String name;
 }

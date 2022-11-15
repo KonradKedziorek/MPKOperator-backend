@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = UniquePhoneNumberValidator.class)
 @Retention(RUNTIME)
 public @interface UniquePhoneNumber {
-    String message() default "User with this phone number already exist!";
+    String message();
     Class<?>[] groups() default { };
     Class<? extends Payload>[] payload() default { };
 }

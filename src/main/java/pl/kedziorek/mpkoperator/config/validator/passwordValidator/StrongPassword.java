@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = StrongPasswordValidator.class)
 @Retention(RUNTIME)
 public @interface StrongPassword {
-    String message() default "Invalid Password";
+    String message();
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

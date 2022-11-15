@@ -16,6 +16,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -27,33 +28,36 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+//    @NotBlank
+//    private UUID uuid;
+
+    @NotBlank(message = "Name is mandatory")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "Surname is mandatory")
     private String surname;
 
-    @NotBlank
-    @UniqueUsername()
+    @NotBlank(message = "Username is mandatory")
+    @UniqueUsername(message = "User with this username already exist!")
     private String username;
 
-    @NotBlank
-    @UniqueEmail()
+    @NotBlank(message = "Email is mandatory")
+    @UniqueEmail(message = "User with this email address already exist!")
     @Email
     private String email;
 
-    @NotBlank
-    @StrongPassword()
+    @NotBlank(message = "Password is mandatory")
+//    @StrongPassword(message = "Invalid password!")
     @Column(length = 256)
     private String password;
 
-    @NotBlank
-    @UniquePesel()
+    @NotBlank(message = "Pesel is mandatory")
+    @UniquePesel(message = "User with this pesel already exist!")
     private String pesel;
 
-    @NotBlank
-    @ValidPhoneNumber()
-    @UniquePhoneNumber()
+    @NotBlank(message = "Phone number is mandatory")
+    @ValidPhoneNumber(message = "Invalid phone number!")
+    @UniquePhoneNumber(message = "User with this phone number already exist!")
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)

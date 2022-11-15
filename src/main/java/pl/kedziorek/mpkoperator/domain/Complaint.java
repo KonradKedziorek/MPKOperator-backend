@@ -3,11 +3,16 @@ package pl.kedziorek.mpkoperator.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -20,6 +25,9 @@ public class Complaint {
     private Long id;
 
     @NotBlank
+    private UUID uuid;
+
+    @NotBlank
     private LocalDateTime dateOfEvent;
 
     @NotBlank
@@ -27,6 +35,27 @@ public class Complaint {
 
     @NotBlank
     private String description;
+
+    @NotBlank
+    private String nameOfNotifier;
+
+    @NotBlank
+    private String surnameOfNotifier;
+
+    @NotBlank
+    private String contactToNotifier;
+
+    @CreatedBy
+    private String createdBy;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedBy
+    private String modifiedBy;
+
+    @LastModifiedDate
+    private LocalDateTime modifiedAt;
 
     @Enumerated(EnumType.STRING)
     @NotBlank

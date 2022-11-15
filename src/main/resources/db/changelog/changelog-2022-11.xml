@@ -40,4 +40,33 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add_new_columns_to_complaint_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="complaint" >
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_of_notifier" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname_of_notifier" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_to_notifier" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_at" type="datetime" >
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
