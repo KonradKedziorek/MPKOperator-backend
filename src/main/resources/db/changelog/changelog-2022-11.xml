@@ -69,4 +69,43 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_comment_table" author="Konrad Kedziorek">
+        <createTable tableName="comment">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_at" type="datetime" >
+                <constraints nullable="true"/>
+            </column>
+            <column name="content" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="complaint_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet  id="add_foreign_key_to_complaint_id"  author="Konrad Kedziorek">
+        <addForeignKeyConstraint  baseColumnNames="complaint_id"
+                                  baseTableName="comment"
+                                  baseTableSchemaName="public"
+                                  constraintName="fk_complaint_comment"
+                                  deferrable="true"
+                                  onDelete="RESTRICT"
+                                  onUpdate="RESTRICT"
+                                  referencedColumnNames="id"
+                                  referencedTableName="complaint"
+                                  referencedTableSchemaName="public"/>
+    </changeSet>
+
 </databaseChangeLog>

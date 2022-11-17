@@ -12,6 +12,7 @@ import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -60,4 +61,7 @@ public class Complaint {
     @Enumerated(EnumType.STRING)
     @NotBlank
     private ComplaintStatus complaintStatus;
+
+    @OneToMany(mappedBy = "comment")
+    private Set<Comment> comments;
 }
