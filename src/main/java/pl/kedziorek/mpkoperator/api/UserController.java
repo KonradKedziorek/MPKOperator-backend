@@ -10,21 +10,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.kedziorek.mpkoperator.config.filter.CustomAuthorizationFilter;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
-import pl.kedziorek.mpkoperator.config.filter.CustomAuthorizationFilter;
 import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -38,16 +34,12 @@ public class UserController {
 
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@Validated @RequestBody User user) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
-//        user.setUuid(UUID.randomUUID());
-        //TODO Do liquibasea wrzucic
         return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@Validated @RequestBody Role role) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveRole(role));
+        return ResponseEntity.ok().body(userService.saveRole(role));
     }
 
     @PostMapping("/role/addtouser")

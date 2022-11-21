@@ -1,6 +1,7 @@
 package pl.kedziorek.mpkoperator.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedBy;
@@ -17,18 +18,16 @@ import java.util.UUID;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "complaint", schema = "public")
 public class Complaint {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private UUID uuid;
 
-    @NotBlank
     private LocalDateTime dateOfEvent;
 
     @NotBlank
@@ -42,6 +41,9 @@ public class Complaint {
 
     @NotBlank
     private String surnameOfNotifier;
+
+    @NotBlank
+    private String peselOfNotifier;
 
     @NotBlank
     private String contactToNotifier;
@@ -59,7 +61,6 @@ public class Complaint {
     private LocalDateTime modifiedAt;
 
     @Enumerated(EnumType.STRING)
-    @NotBlank
     private ComplaintStatus complaintStatus;
 
     @OneToMany(mappedBy = "comment")

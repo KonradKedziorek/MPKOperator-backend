@@ -28,8 +28,7 @@ public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @NotBlank
-//    private UUID uuid;
+    private UUID uuid;
 
     @NotBlank(message = "Name is mandatory")
     private String name;

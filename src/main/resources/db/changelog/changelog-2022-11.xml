@@ -108,4 +108,36 @@
                                   referencedTableSchemaName="public"/>
     </changeSet>
 
+    <changeSet id="add_uuid_column_to_user" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-complaint-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="complaint"/>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-comment-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="comment"/>
+    </changeSet>
+
+    <changeSet id="add_pesel_column_to_complaint_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="complaint" >
+            <column name="pesel_of_notifier" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
