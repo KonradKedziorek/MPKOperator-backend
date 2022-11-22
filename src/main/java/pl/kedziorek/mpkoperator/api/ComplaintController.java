@@ -10,6 +10,7 @@ import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -31,9 +32,9 @@ public class ComplaintController {
         return ResponseEntity.ok().body(complaintService.getAllComplaints());
     }
 
-    @GetMapping("/complaint/{id}")
-    public ResponseEntity<Complaint> getComplaint(@PathVariable Long id) {
-        return ResponseEntity.ok().body(complaintRepository.findById(id).orElseThrow(() ->
+    @GetMapping("/complaint/{uuid}")
+    public ResponseEntity<Complaint> getComplaint(@PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(complaintRepository.findByUuid(uuid).orElseThrow(() ->
                 new ResourceNotFoundException("Complaint not found in database")));
     }
 
