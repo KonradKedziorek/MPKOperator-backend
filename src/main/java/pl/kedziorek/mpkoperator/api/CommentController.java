@@ -9,6 +9,7 @@ import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
 import pl.kedziorek.mpkoperator.service.CommentService;
 
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -28,5 +29,10 @@ public class CommentController {
         complaint.getComments().add(comment);
 
         return ResponseEntity.ok().body(commentService.saveComment(comment));
+    }
+
+    @GetMapping("/complaint/{uuid}/getAllComments")
+    public ResponseEntity<Set<Comment>> addCommentToComplaint(@PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(commentService.getAllCommentsOfComplaint(uuid));
     }
 }

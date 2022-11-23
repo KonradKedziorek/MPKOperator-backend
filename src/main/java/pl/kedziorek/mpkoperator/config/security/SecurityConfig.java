@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
                 .antMatchers("/api/login/**", "/api/token/refresh/**").permitAll()
-                .antMatchers(GET, "/api/users/**").permitAll()             //.hasAnyAuthority("ROLE_USER")   // TODO Tak przyznajemy permisje dla odpowiednich roli
+                .antMatchers(GET, "/api/users/**", "/api/complaint/{uuid}/getAllComments/**").permitAll()             //.hasAnyAuthority("ROLE_USER")   // TODO Tak przyznajemy permisje dla odpowiednich roli
                 .antMatchers(GET, "/api/role/addtouser").permitAll()   // TODO Tak przyznajemy permisje dla odpowiednich roli
                 .antMatchers(POST, "/api/user/save/**", "/api/complaint/save/**").permitAll()
                 .antMatchers(POST, "/api/complaint/{uuid}/addComment/**").permitAll();

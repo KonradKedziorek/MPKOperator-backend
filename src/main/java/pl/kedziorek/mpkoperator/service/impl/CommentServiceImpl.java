@@ -4,12 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Comment;
+import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.repository.CommentRepository;
+import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
 import pl.kedziorek.mpkoperator.service.CommentService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
+    private final ComplaintRepository complaintRepository;
 
     @Override
     public Comment saveComment(Comment comment) {
@@ -24,5 +31,14 @@ public class CommentServiceImpl implements CommentService {
         comment.setCreatedAt(LocalDateTime.now());
         log.info("Saving new comment to the database");
         return commentRepository.save(comment);
+    }
+
+    @Override
+    public Set<Comment> getAllCommentsOfComplaint(UUID uuid) {
+        Complaint complaint = complaintRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException(
+                        String.format("Complaint with uuid: %s not found in the database", uuid)
+                ));
+        return complaint.getComments();
     }
 }
