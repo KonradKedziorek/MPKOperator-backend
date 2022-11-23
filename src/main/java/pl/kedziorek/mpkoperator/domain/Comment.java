@@ -1,8 +1,7 @@
 package pl.kedziorek.mpkoperator.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -11,15 +10,19 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    //TODO Add uuid field
 
     @CreatedBy
     private String createdBy;
@@ -38,5 +41,18 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "complaint_id", nullable = false)
-    private Comment comment;
+    private Complaint complaint;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Comment comment = (Comment) o;
+        return id != null && Objects.equals(id, comment.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
