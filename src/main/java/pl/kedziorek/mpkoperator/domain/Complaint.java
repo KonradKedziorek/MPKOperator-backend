@@ -24,16 +24,16 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-@RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "complaint", schema = "public")
+@Data
+@EqualsAndHashCode
 public class Complaint {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private UUID uuid;
-
-    //TODO Rozdzielic date i godzine bo pozniej chyba byl problem przy paginacji i filtrowaniu
 
     private LocalDateTime dateOfEvent;
 
@@ -74,19 +74,6 @@ public class Complaint {
     private Set<Comment> comments;
 
     private LocalDate date;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Complaint complaint = (Complaint) o;
-        return id != null && Objects.equals(id, complaint.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
     public static Complaint map(ComplaintRequest complaintRequest){
         return Complaint.builder()

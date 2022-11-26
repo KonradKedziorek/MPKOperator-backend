@@ -12,6 +12,7 @@ import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,10 +30,14 @@ public class ComplaintController {
         return ResponseEntity.ok().body(complaintService.saveComplaint(complaint));
     }
 
-    @GetMapping("/complaint/all")
-    public ResponseEntity<List<ComplaintResponse>> getComplaints() {
-        return ResponseEntity.ok().body(complaintService.getAllComplaints().stream().map(ComplaintResponse::map)
-                .collect(Collectors.toList()));
+    @PostMapping("/complaints/page={page}/size={size}")
+    public ResponseEntity<?> getComplaints(
+            @PathVariable int page,
+            @PathVariable int size,
+            @RequestBody Map<String, String> params) {
+        return ResponseEntity.ok().body(
+                complaintService.getComplaints(params, page, size)
+        );
     }
 
     @GetMapping("/complaint/{uuid}")
