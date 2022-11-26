@@ -1,5 +1,6 @@
 package pl.kedziorek.mpkoperator.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedBy;
@@ -41,6 +42,7 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "complaint_id", nullable = false)
+    @JsonIgnore
     private Complaint complaint;
 
     @Override

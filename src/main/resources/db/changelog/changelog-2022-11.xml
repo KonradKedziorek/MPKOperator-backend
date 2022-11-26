@@ -140,4 +140,85 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_complaint_history_table" author="Konrad Kedziorek">
+        <createTable tableName="complaint_history">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_event" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="place_of_event" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="complaint_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_of_notifier" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="surname_of_notifier" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pesel_of_notifier" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_to_notifier" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_at" type="datetime" >
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-complaint-history-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="complaint_history"/>
+    </changeSet>
+
+    <changeSet id="add_created_at_and_by_original_complaint" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="complaint_history" >
+            <column name="created_at_original_complaint" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn schemaName= "public" tableName="complaint_history" >
+            <column name="created_by_original_complaint" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_date_to_complaint_and_complaint_history" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="complaint_history" >
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn schemaName= "public" tableName="complaint" >
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

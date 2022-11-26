@@ -6,37 +6,42 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Complaint;
+import pl.kedziorek.mpkoperator.domain.dto.ComplaintRequest;
+import pl.kedziorek.mpkoperator.domain.dto.ComplaintResponse;
 import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class ComplaintController {
     private final ComplaintService complaintService;
-    private final ComplaintRepository complaintRepository;
 
     @PostMapping("/complaint/save")
-    public ResponseEntity<Complaint> saveComplaint(
+    public ResponseEntity<?> saveComplaint(
             @Validated
             @RequestBody
-                    Complaint complaint) {
+                    ComplaintRequest complaint) {
         return ResponseEntity.ok().body(complaintService.saveComplaint(complaint));
     }
 
     @GetMapping("/complaint/all")
-    public ResponseEntity<List<Complaint>> getComplaints() {
-        return ResponseEntity.ok().body(complaintService.getAllComplaints());
+    public ResponseEntity<List<ComplaintResponse>> getComplaints() {
+        return ResponseEntity.ok().body(complaintService.getAllComplaints().stream().map(ComplaintResponse::map)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/complaint/{uuid}")
     public ResponseEntity<Complaint> getComplaint(@PathVariable UUID uuid) {
-        return ResponseEntity.ok().body(complaintRepository.findByUuid(uuid).orElseThrow(() ->
-                new ResourceNotFoundException("Complaint not found in database")));
+        return ResponseEntity.ok().body(complaintService.findByUuid(uuid));
     }
 
-    //TODO Searching all complaints of one notifier (methods are ready to use)
+    @PutMapping("/complaint/{uuid}/update")
+    public ResponseEntity<Complaint> updateComplaint(@RequestBody Complaint complaint, @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(complaintService.updateComplaint(complaint, uuid));
+    }
 }

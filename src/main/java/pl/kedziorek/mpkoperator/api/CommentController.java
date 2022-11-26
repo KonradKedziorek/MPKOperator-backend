@@ -19,7 +19,7 @@ public class CommentController {
     private final ComplaintRepository complaintRepository;
     private final CommentService commentService;
 
-    @PostMapping("/complaint/{uuid}/addComment")
+    @PostMapping("/complaint/{uuid}/comment")
     public ResponseEntity<Comment> addCommentToComplaint(@RequestBody Comment comment, @PathVariable UUID uuid) {
         Complaint complaint = complaintRepository.findByUuid(uuid)
                 .orElseThrow(()-> new ResourceNotFoundException(
@@ -31,7 +31,7 @@ public class CommentController {
         return ResponseEntity.ok().body(commentService.saveComment(comment));
     }
 
-    @GetMapping("/complaint/{uuid}/getAllComments")
+    @GetMapping("/complaint/{uuid}/comments")
     public ResponseEntity<Set<Comment>> addCommentToComplaint(@PathVariable UUID uuid) {
         return ResponseEntity.ok().body(commentService.getAllCommentsOfComplaint(uuid));
     }
