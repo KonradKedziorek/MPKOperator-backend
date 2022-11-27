@@ -2,7 +2,6 @@ package pl.kedziorek.mpkoperator.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.ComplaintHistory;
@@ -10,7 +9,6 @@ import pl.kedziorek.mpkoperator.repository.ComplaintHistoryRepository;
 import pl.kedziorek.mpkoperator.service.ComplaintHistoryService;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service

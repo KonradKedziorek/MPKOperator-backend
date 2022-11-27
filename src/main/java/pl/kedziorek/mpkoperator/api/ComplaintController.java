@@ -4,17 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.dto.ComplaintRequest;
-import pl.kedziorek.mpkoperator.domain.dto.ComplaintResponse;
-import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")

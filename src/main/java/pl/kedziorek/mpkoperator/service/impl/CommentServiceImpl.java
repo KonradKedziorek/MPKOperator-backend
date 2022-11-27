@@ -13,7 +13,6 @@ import pl.kedziorek.mpkoperator.service.CommentService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

@@ -8,7 +8,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Complaint;
-import pl.kedziorek.mpkoperator.domain.ComplaintHistory;
 import pl.kedziorek.mpkoperator.domain.dto.ComplaintRequest;
 import pl.kedziorek.mpkoperator.domain.dto.DataResponse;
 import pl.kedziorek.mpkoperator.repository.ComplaintHistoryRepository;
@@ -18,7 +17,6 @@ import pl.kedziorek.mpkoperator.service.ComplaintService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,7 +30,6 @@ import static pl.kedziorek.mpkoperator.utils.LocalDateConverter.convertToLocalDa
 public class ComplaintServiceImpl implements ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final ComplaintHistoryService complaintHistoryService;
-    private final ComplaintHistoryRepository complaintHistoryRepository;
 
     @Override
     public Complaint saveComplaint(ComplaintRequest complaintRequest) {
@@ -42,11 +39,6 @@ public class ComplaintServiceImpl implements ComplaintService {
         Complaint complaintResult = complaintRepository.save(complaint);
         complaintHistoryService.saveComplaintInComplaintHistory(complaintResult, complaintResult.getUuid());
         return complaintRepository.save(complaint);
-    }
-
-    @Override
-    public List<Complaint> getAllComplaints() {
-        return (List<Complaint>) complaintRepository.findAll();
     }
 
     @Override
@@ -74,12 +66,12 @@ public class ComplaintServiceImpl implements ComplaintService {
     @Override
     public DataResponse<?> getComplaints(Map<String, String> params, int page, int size) {
         Page<Complaint> pageComplaint = complaintRepository.findAllParams(
-                params.get("placeOfEvent"),
-                params.get("nameOfNotifier"),
-                params.get("surnameOfNotifier"),
-                params.get("peselOfNotifier"),
-                params.get("createdBy"),
-//                convertToLocalDate(params.get("date")),
+                params.get("placeOfEvent").toUpperCase(),
+                params.get("nameOfNotifier").toUpperCase(),
+                params.get("surnameOfNotifier").toUpperCase(),
+                params.get("peselOfNotifier").toUpperCase(),
+                params.get("createdBy").toUpperCase(),
+                convertToLocalDate(params.get("date")),
                 PageRequest.of(page, size)
         );
 
