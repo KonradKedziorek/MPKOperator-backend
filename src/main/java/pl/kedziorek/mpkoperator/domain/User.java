@@ -11,10 +11,7 @@ import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsernam
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -60,7 +57,7 @@ public class User {
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    private Set<Role> roles = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

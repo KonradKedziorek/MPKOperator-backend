@@ -5,16 +5,21 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.kedziorek.mpkoperator.config.filter.CustomAuthorizationFilter;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
+import pl.kedziorek.mpkoperator.domain.dto.AuthResponse;
+import pl.kedziorek.mpkoperator.domain.dto.Credentials;
+import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
+import pl.kedziorek.mpkoperator.service.AuthService;
 import pl.kedziorek.mpkoperator.service.UserService;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -25,12 +30,29 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static pl.kedziorek.mpkoperator.utils.CookieUtils.buildCookie;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
+
+    private final AuthService authenticate;
+
+    @Value("${domain}")
+    private String domain;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Credentials credentials, HttpServletResponse response) throws IllegalAccessException {
+        AuthResponse authResponse = authenticate.authenticate(credentials);
+        Cookie tokenCookie = buildCookie(7 * 24 * 60 * 60, true, true, "/", domain, authResponse.getToken(), "token");
+        Cookie refreshTokenCookie= buildCookie(7 * 24 * 60 * 60, true, true, "/", domain, authResponse.getRefreshToken(), "refreshToken");
+        response.addCookie(tokenCookie);
+        response.addCookie(refreshTokenCookie);
+        return ResponseEntity.ok(authResponse);
+    }
 
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@Validated @RequestBody User user) {
@@ -43,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping("/role/addtouser")
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
+    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserDTO form) {
         userService.addRoleToUser(form.getUsername(), form.getRoleName());
         return ResponseEntity.ok().build();
     }
@@ -73,16 +95,10 @@ public class UserController {
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
             } catch (Exception exception){
-                CustomAuthorizationFilter.LoggingException(response, exception);
+                log.error("Error", exception);
             }
         } else {
             throw new RuntimeException("Refresh token is missing");
         }
     }
-}
-
-@Data
-class RoleToUserForm {
-    private String username;
-    private String roleName;
 }
