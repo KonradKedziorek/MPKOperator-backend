@@ -33,33 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsServiceimpl;
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
-//    }
-
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter(jwtUtils, userDetailsServiceimpl);
     }
-
-
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-////        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
-////        customAuthenticationFilter.setFilterProcessesUrl("/api/login");
-//        http.csrf().disable();
-//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-////        http.authorizeRequests()
-////                .antMatchers("/api/login/**", "/api/token/refresh/**").permitAll()
-////                .antMatchers(GET, "/api/users/**", "/api/complaint/{uuid}/comments/**").permitAll()             //.hasAnyAuthority("ROLE_USER")   // TODO Tak przyznajemy permisje dla odpowiednich roli
-////                .antMatchers(GET, "/api/role/addtouser").permitAll()   // TODO Tak przyznajemy permisje dla odpowiednich roli
-////                .antMatchers(POST, "/api/user/save/**", "/api/complaint/save/**").permitAll()
-////                .antMatchers(POST, "/api/complaint/{uuid}/comment/**").permitAll();
-//        http.authorizeRequests().anyRequest().permitAll(); //zeby dodac autentykacje .authorization()
-////        http.addFilter(customAuthenticationFilter);
-//        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-//    }
 
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
@@ -85,7 +62,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedHeaders(Arrays.asList("Content-Type", "Access-Control-Allow-Origin", " Access-Control-Allow-Headers", "Authorization", "Accept-Language"));
+        config.setAllowedHeaders(Arrays.asList(
+                "Content-Type",
+                "Access-Control-Allow-Origin",
+                "Access-Control-Allow-Headers",
+                "Authorization",
+                "Accept-Language"));
         config.setAllowedOrigins(List.of(""));
         config.setAllowedMethods(List.of("*"));
         source.registerCorsConfiguration("/**", config);
