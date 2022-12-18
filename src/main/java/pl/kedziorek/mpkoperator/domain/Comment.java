@@ -45,6 +45,11 @@ public class Comment {
     @JsonIgnore
     private Complaint complaint;
 
+    @ManyToOne
+    @JoinColumn(name = "fault_id", nullable = false)
+    @JsonIgnore
+    private Fault fault;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
