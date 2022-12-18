@@ -7,7 +7,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
-import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 
 import javax.persistence.*;
@@ -60,6 +59,8 @@ public class Fault {
 
     @OneToMany(mappedBy = "fault")
     private Set<Comment> comments;
+
+    //TODO Tu sie doda jeszcze jaki autobus
 
     public static Fault map(FaultRequest faultRequest) {
         return Fault.builder()
