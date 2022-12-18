@@ -1,4 +1,4 @@
-package pl.kedziorek.mpkoperator.domain.dto;
+package pl.kedziorek.mpkoperator.domain.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +19,7 @@ public class ComplaintResponse {
     private String peselOfNotifier;
     private ComplaintStatus complaintStatus;
 
+    //TODO Uzyc tego gdzies!!!!
     public static ComplaintResponse map(Complaint complaint) {
         return ComplaintResponse.builder()
                 .uuid(complaint.getUuid())

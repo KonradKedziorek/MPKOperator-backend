@@ -6,7 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
-import pl.kedziorek.mpkoperator.domain.dto.ComplaintRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
 import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 
 import javax.persistence.*;
@@ -71,7 +71,7 @@ public class Complaint {
 
     private LocalDate date;
 
-    public static Complaint map(ComplaintRequest complaintRequest){
+    public static Complaint map(ComplaintRequest complaintRequest) {
         return Complaint.builder()
                 .uuid(UUID.randomUUID())
                 .dateOfEvent(complaintRequest.getDateOfEvent())

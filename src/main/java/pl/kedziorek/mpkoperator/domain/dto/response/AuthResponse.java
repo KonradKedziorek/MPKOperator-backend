@@ -1,4 +1,4 @@
-package pl.kedziorek.mpkoperator.domain.dto;
+package pl.kedziorek.mpkoperator.domain.dto.response;
 
 import lombok.*;
 

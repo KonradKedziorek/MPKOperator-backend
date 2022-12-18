@@ -1,8 +1,8 @@
 package pl.kedziorek.mpkoperator.service;
 
 import pl.kedziorek.mpkoperator.domain.Complaint;
-import pl.kedziorek.mpkoperator.domain.dto.ComplaintRequest;
-import pl.kedziorek.mpkoperator.domain.dto.DataResponse;
+import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 
 import java.util.Map;
 import java.util.UUID;

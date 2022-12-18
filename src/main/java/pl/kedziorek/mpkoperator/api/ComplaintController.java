@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.domain.Complaint;
-import pl.kedziorek.mpkoperator.domain.dto.ComplaintRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
 import java.util.Map;

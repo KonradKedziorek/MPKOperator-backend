@@ -5,6 +5,9 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.security.core.context.SecurityContextHolder;
+import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
+import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 
 import javax.persistence.*;
@@ -57,4 +60,17 @@ public class Fault {
 
     @OneToMany(mappedBy = "fault")
     private Set<Comment> comments;
+
+    public static Fault map(FaultRequest faultRequest) {
+        return Fault.builder()
+                .uuid(UUID.randomUUID())
+                .dateOfEvent(faultRequest.getDateOfEvent())
+                .date(LocalDate.now())
+                .placeOfEvent(faultRequest.getPlaceOfEvent())
+                .description(faultRequest.getDescription())
+                .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
+                .createdAt(LocalDateTime.now())
+                .faultStatus(FaultStatus.REPORTED)
+                .build();
+    }
 }

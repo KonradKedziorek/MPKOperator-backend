@@ -1,4 +1,4 @@
-package pl.kedziorek.mpkoperator.domain.dto;
+package pl.kedziorek.mpkoperator.domain.dto.request;
 
 import lombok.Builder;
 import lombok.Data;

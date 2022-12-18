@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.JwtUtils;
 import pl.kedziorek.mpkoperator.config.security.AuthenticationProviderService;
 import pl.kedziorek.mpkoperator.domain.User;
-import pl.kedziorek.mpkoperator.domain.dto.AuthResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.AuthResponse;
 import pl.kedziorek.mpkoperator.domain.dto.Credentials;
 import pl.kedziorek.mpkoperator.service.AuthService;
 import pl.kedziorek.mpkoperator.service.UserService;

@@ -8,9 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Complaint;
-import pl.kedziorek.mpkoperator.domain.dto.ComplaintRequest;
-import pl.kedziorek.mpkoperator.domain.dto.DataResponse;
-import pl.kedziorek.mpkoperator.repository.ComplaintHistoryRepository;
+import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
 import pl.kedziorek.mpkoperator.service.ComplaintHistoryService;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
@@ -36,6 +35,7 @@ public class ComplaintServiceImpl implements ComplaintService {
         log.info("Saving new complaint to the database");
         Complaint complaint = Complaint.map(complaintRequest);
 
+        //TODO Tu cos chyab zjebane bo dwa razy save jest
         Complaint complaintResult = complaintRepository.save(complaint);
         complaintHistoryService.saveComplaintInComplaintHistory(complaintResult, complaintResult.getUuid());
         return complaintRepository.save(complaint);

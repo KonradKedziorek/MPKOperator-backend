@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
-import pl.kedziorek.mpkoperator.domain.dto.AuthResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.AuthResponse;
 import pl.kedziorek.mpkoperator.domain.dto.Credentials;
 import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
 import pl.kedziorek.mpkoperator.service.AuthService;
