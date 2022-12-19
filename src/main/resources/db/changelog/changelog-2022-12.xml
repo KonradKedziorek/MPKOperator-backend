@@ -57,4 +57,18 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="drop-not-null-constraint-to-complaint-id-in-comment-table" author="Konrad Kedziorek">
+        <dropNotNullConstraint columnDataType="bigint"
+                                columnName="complaint_id"
+                                schemaName="public"
+                                tableName="comment"/>
+    </changeSet>
+
+    <changeSet id="drop-not-null-constraint-to-fault-id-in-comment-table" author="Konrad Kedziorek">
+        <dropNotNullConstraint columnDataType="bigint"
+                               columnName="fault_id"
+                               schemaName="public"
+                               tableName="comment"/>
+    </changeSet>
+
 </databaseChangeLog>

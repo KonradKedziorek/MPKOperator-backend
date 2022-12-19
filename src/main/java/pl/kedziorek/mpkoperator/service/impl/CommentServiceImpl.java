@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Comment;
 import pl.kedziorek.mpkoperator.domain.Complaint;
+import pl.kedziorek.mpkoperator.domain.Fault;
 import pl.kedziorek.mpkoperator.repository.CommentRepository;
 import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
+import pl.kedziorek.mpkoperator.repository.FaultRepository;
 import pl.kedziorek.mpkoperator.service.CommentService;
 
 import javax.transaction.Transactional;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final ComplaintRepository complaintRepository;
+    private final FaultRepository faultRepository;
 
     @Override
     public Comment saveComment(Comment comment) {
@@ -39,5 +42,14 @@ public class CommentServiceImpl implements CommentService {
                         String.format("Complaint with uuid: %s not found in the database", uuid)
                 ));
         return complaint.getComments();
+    }
+
+    @Override
+    public Set<Comment> getAllCommentsOfFault(UUID uuid) {
+        Fault fault = faultRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException(
+                        String.format("Fault with uuid: %s not found in the database", uuid)
+                ));
+        return fault.getComments();
     }
 }

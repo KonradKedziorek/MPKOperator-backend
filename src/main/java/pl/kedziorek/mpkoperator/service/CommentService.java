@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface CommentService {
     Comment saveComment(Comment comment);
     Set<Comment> getAllCommentsOfComplaint(UUID uuid);
+    Set<Comment> getAllCommentsOfFault(UUID uuid);
 }

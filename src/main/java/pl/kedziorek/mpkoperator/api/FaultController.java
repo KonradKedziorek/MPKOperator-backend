@@ -17,8 +17,6 @@ import java.util.UUID;
 public class FaultController {
     private final FaultService faultService;
 
-    //TODO Dodawanie komentarza jeszcze grrrrrr
-
     @PostMapping("/fault/save")
     public ResponseEntity<?> saveFault(
             @Validated

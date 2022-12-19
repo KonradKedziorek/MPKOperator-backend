@@ -41,12 +41,12 @@ public class Comment {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "complaint_id", nullable = false)
+    @JoinColumn(name = "complaint_id")
     @JsonIgnore
     private Complaint complaint;
 
     @ManyToOne
-    @JoinColumn(name = "fault_id", nullable = false)
+    @JoinColumn(name = "fault_id")
     @JsonIgnore
     private Fault fault;
 
