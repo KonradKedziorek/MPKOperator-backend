@@ -71,4 +71,56 @@
                                tableName="comment"/>
     </changeSet>
 
+    <changeSet id="add_fault_history_table" author="Konrad Kedziorek">
+        <createTable tableName="fault_history">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_event" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="place_of_event" type="varchar(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_at" type="datetime" >
+                <constraints nullable="true"/>
+            </column>
+            <column name="fault_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_original_fault" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at_original_fault" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-fault-history-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="fault_history"/>
+    </changeSet>
+
 </databaseChangeLog>

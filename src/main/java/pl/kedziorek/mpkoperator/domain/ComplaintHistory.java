@@ -84,7 +84,7 @@ public class ComplaintHistory {
         return getClass().hashCode();
     }
 
-    public static ComplaintHistory createComplaintHistory(Complaint complaint, UUID uuid){
+    public static ComplaintHistory createComplaintHistory(Complaint complaint, UUID uuid) {
         return ComplaintHistory.builder()
                 .uuid(complaint.getUuid())
                 .dateOfEvent(complaint.getDateOfEvent())

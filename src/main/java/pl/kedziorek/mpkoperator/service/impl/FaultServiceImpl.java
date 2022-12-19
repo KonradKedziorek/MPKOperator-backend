@@ -10,6 +10,7 @@ import pl.kedziorek.mpkoperator.domain.Fault;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.repository.FaultRepository;
+import pl.kedziorek.mpkoperator.service.FaultHistoryService;
 import pl.kedziorek.mpkoperator.service.FaultService;
 
 import javax.transaction.Transactional;
@@ -25,12 +26,15 @@ import static pl.kedziorek.mpkoperator.utils.LocalDateConverter.convertToLocalDa
 @Slf4j
 public class FaultServiceImpl implements FaultService {
     private final FaultRepository faultRepository;
+    private final FaultHistoryService faultHistoryService;
 
     @Override
     public Fault saveFault(FaultRequest faultRequest) {
         log.info("Saving new fault to the database");
         Fault fault = Fault.map(faultRequest);
+        Fault faultResult = faultRepository.save(fault);
 
+        faultHistoryService.saveComplaintInFaultHistory(faultResult, faultResult.getUuid());
         return faultRepository.save(fault);
     }
 
