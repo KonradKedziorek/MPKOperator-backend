@@ -10,5 +10,6 @@ import java.util.UUID;
 public interface FaultService {
     Fault saveFault(FaultRequest faultRequest);
     Fault findByUuid(UUID uuid);
+    Fault updateFault(Fault fault, UUID uuid);
     DataResponse<?> getFaults(Map<String, String> params, int page, int size);
 }

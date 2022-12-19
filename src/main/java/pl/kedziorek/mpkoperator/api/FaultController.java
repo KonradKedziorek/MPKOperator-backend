@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.Fault;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
 import pl.kedziorek.mpkoperator.service.FaultService;
@@ -40,5 +41,8 @@ public class FaultController {
         );
     }
 
-    //TODO Update jeszcze!!!
+    @PutMapping("/fault/{uuid}/update")
+    public ResponseEntity<Fault> updateFault(@RequestBody Fault fault, @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(faultService.updateFault(fault, uuid));
+    }
 }

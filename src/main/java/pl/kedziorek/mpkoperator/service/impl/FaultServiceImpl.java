@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
+import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.Fault;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
@@ -14,6 +16,7 @@ import pl.kedziorek.mpkoperator.service.FaultHistoryService;
 import pl.kedziorek.mpkoperator.service.FaultService;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,6 +45,22 @@ public class FaultServiceImpl implements FaultService {
     public Fault findByUuid(UUID uuid) {
         return faultRepository.findByUuid(uuid).orElseThrow(() ->
                 new ResourceNotFoundException("Fault not found in database"));
+    }
+
+    @Override
+    public Fault updateFault(Fault fault, UUID uuid) {
+        Fault updatedFault = faultRepository.findByUuid(uuid).orElseThrow(() ->
+                new ResourceNotFoundException("Fault not found in the database"));
+
+        log.info("Updating fault with uuid: {} to the database", updatedFault.getUuid());
+
+        updatedFault.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        updatedFault.setModifiedAt(LocalDateTime.now());
+        updatedFault.setFaultStatus(fault.getFaultStatus());
+
+        faultHistoryService.saveComplaintInFaultHistory(updatedFault, updatedFault.getUuid());
+
+        return faultRepository.save(updatedFault);
     }
 
     @Override
