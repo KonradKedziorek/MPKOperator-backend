@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.ComplaintResponse;
 import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 
 import javax.persistence.*;
@@ -85,6 +86,18 @@ public class Complaint {
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
                 .date(LocalDate.now())
+                .build();
+    }
+
+    public static ComplaintResponse map2(Complaint complaint) {
+        return ComplaintResponse.builder()
+                .uuid(complaint.getUuid())
+                .dateOfEvent(complaint.getDateOfEvent())
+                .placeOfEvent(complaint.getPlaceOfEvent())
+                .nameOfNotifier(complaint.getNameOfNotifier())
+                .surnameOfNotifier(complaint.getSurnameOfNotifier())
+                .peselOfNotifier(complaint.getPeselOfNotifier())
+                .complaintStatus(complaint.getComplaintStatus())
                 .build();
     }
 }

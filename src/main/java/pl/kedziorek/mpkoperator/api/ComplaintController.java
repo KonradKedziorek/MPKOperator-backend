@@ -6,10 +6,14 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.ComplaintResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -30,8 +34,13 @@ public class ComplaintController {
             @PathVariable int page,
             @PathVariable int size,
             @RequestBody Map<String, String> params) {
-        return ResponseEntity.ok().body(
-                complaintService.getComplaints(params, page, size)
+        DataResponse<Complaint> complaintDataResponse = complaintService.getComplaints(params, page, size);
+        List<ComplaintResponse> complaintResponseList = complaintDataResponse.getData().stream().map(Complaint::map2).collect(Collectors.toList());
+        return ResponseEntity.ok().body(DataResponse.<ComplaintResponse>builder()
+                .data(complaintResponseList)
+                .page(complaintDataResponse.getPage())
+                .size(complaintDataResponse.getSize())
+                .build()
         );
     }
 

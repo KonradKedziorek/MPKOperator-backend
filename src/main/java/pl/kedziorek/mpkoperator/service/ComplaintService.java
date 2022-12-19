@@ -7,9 +7,9 @@ import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import java.util.Map;
 import java.util.UUID;
 
-public interface ComplaintService {
+public interface ComplaintService<T> {
     Complaint saveComplaint(ComplaintRequest complaint);
     Complaint findByUuid(UUID uuid);
     Complaint updateComplaint(Complaint complaint, UUID uuid);
-    DataResponse<?> getComplaints(Map<String, String> params, int page, int size);
+    DataResponse<T> getComplaints(Map<String, String> params, int page, int size);
 }

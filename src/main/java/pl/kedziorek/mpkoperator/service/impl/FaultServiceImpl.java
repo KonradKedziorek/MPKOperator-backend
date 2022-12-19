@@ -37,7 +37,7 @@ public class FaultServiceImpl implements FaultService {
         Fault faultResult = faultRepository.save(fault);
 
         faultHistoryService.saveComplaintInFaultHistory(faultResult, faultResult.getUuid());
-        return faultRepository.save(fault);
+        return faultResult;
     }
 
     @Override

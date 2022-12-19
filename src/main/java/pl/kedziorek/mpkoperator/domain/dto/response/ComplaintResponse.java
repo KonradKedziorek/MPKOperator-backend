@@ -18,17 +18,4 @@ public class ComplaintResponse {
     private String surnameOfNotifier;
     private String peselOfNotifier;
     private ComplaintStatus complaintStatus;
-
-    //TODO Uzyc tego gdzies!!!!
-    public static ComplaintResponse map(Complaint complaint) {
-        return ComplaintResponse.builder()
-                .uuid(complaint.getUuid())
-                .dateOfEvent(complaint.getDateOfEvent())
-                .placeOfEvent(complaint.getPlaceOfEvent())
-                .nameOfNotifier(complaint.getNameOfNotifier())
-                .surnameOfNotifier(complaint.getSurnameOfNotifier())
-                .peselOfNotifier(complaint.getPeselOfNotifier())
-                .complaintStatus(complaint.getComplaintStatus())
-                .build();
-    }
 }

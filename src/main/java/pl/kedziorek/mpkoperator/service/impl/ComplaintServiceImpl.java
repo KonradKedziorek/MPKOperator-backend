@@ -26,7 +26,7 @@ import static pl.kedziorek.mpkoperator.utils.LocalDateConverter.convertToLocalDa
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class ComplaintServiceImpl implements ComplaintService {
+public class ComplaintServiceImpl implements ComplaintService<Complaint> {
     private final ComplaintRepository complaintRepository;
     private final ComplaintHistoryService complaintHistoryService;
 
@@ -35,10 +35,9 @@ public class ComplaintServiceImpl implements ComplaintService {
         log.info("Saving new complaint to the database");
         Complaint complaint = Complaint.map(complaintRequest);
 
-        //TODO Tu cos chyab zjebane bo dwa razy save jest
         Complaint complaintResult = complaintRepository.save(complaint);
         complaintHistoryService.saveComplaintInComplaintHistory(complaintResult, complaintResult.getUuid());
-        return complaintRepository.save(complaint);
+        return complaintResult;
     }
 
     @Override
@@ -64,7 +63,7 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public DataResponse<?> getComplaints(Map<String, String> params, int page, int size) {
+    public DataResponse<Complaint> getComplaints(Map<String, String> params, int page, int size) {
         Page<Complaint> pageComplaint = complaintRepository.findAllParams(
                 params.get("placeOfEvent").toUpperCase(),
                 params.get("nameOfNotifier").toUpperCase(),
