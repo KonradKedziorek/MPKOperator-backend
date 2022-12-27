@@ -2,7 +2,6 @@ package pl.kedziorek.mpkoperator.domain.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 
 import java.time.LocalDateTime;

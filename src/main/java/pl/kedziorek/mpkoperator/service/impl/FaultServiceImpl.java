@@ -26,7 +26,7 @@ import static pl.kedziorek.mpkoperator.utils.LocalDateConverter.convertToLocalDa
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class FaultServiceImpl implements FaultService {
+public class FaultServiceImpl implements FaultService<Fault> {
     private final FaultRepository faultRepository;
     private final FaultHistoryService faultHistoryService;
 
@@ -63,7 +63,7 @@ public class FaultServiceImpl implements FaultService {
     }
 
     @Override
-    public DataResponse<?> getFaults(Map<String, String> params, int page, int size) {
+    public DataResponse<Fault> getFaults(Map<String, String> params, int page, int size) {
         Page<Fault> pageFault = faultRepository.findAllParams(
                 params.get("placeOfEvent").toUpperCase(),
                 params.get("description").toUpperCase(),

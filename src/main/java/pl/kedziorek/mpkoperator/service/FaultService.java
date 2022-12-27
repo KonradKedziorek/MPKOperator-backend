@@ -7,9 +7,9 @@ import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import java.util.Map;
 import java.util.UUID;
 
-public interface FaultService {
+public interface FaultService<T> {
     Fault saveFault(FaultRequest faultRequest);
     Fault findByUuid(UUID uuid);
     Fault updateFault(Fault fault, UUID uuid);
-    DataResponse<?> getFaults(Map<String, String> params, int page, int size);
+    DataResponse<T> getFaults(Map<String, String> params, int page, int size);
 }

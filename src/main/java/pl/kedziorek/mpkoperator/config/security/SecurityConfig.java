@@ -57,20 +57,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowCredentials(true);
+//        config.setAllowedHeaders(Arrays.asList(
+//                "Content-Type",
+//                "Access-Control-Allow-Origin",
+//                "Access-Control-Allow-Headers",
+//                "Authorization",
+//                "Accept-Language"));
+//        config.setAllowedOrigins(List.of(""));
+//        config.setAllowedMethods(List.of("*"));
+//        source.registerCorsConfiguration("/**", config);
+//        return source;
+//    }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4200/"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "DELETE"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Content-Type", "Access-Control-Allow-Origin"," Access-Control-Allow-Headers", "Authorization", "Set-Cookie"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.setAllowedHeaders(Arrays.asList(
-                "Content-Type",
-                "Access-Control-Allow-Origin",
-                "Access-Control-Allow-Headers",
-                "Authorization",
-                "Accept-Language"));
-        config.setAllowedOrigins(List.of(""));
-        config.setAllowedMethods(List.of("*"));
-        source.registerCorsConfiguration("/**", config);
+        corsConfiguration.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
     }
 }

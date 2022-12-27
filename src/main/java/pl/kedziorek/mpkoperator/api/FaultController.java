@@ -4,12 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.Fault;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.ComplaintResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.FaultResponse;
 import pl.kedziorek.mpkoperator.service.FaultService;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -35,9 +41,15 @@ public class FaultController {
             @PathVariable int page,
             @PathVariable int size,
             @RequestBody Map<String, String> params) {
-        return ResponseEntity.ok().body(
-                faultService.getFaults(params, page, size)
+        DataResponse<Fault> faultDataResponse = faultService.getFaults(params, page, size);
+        List<FaultResponse> faultResponseList = faultDataResponse.getData().stream().map(Fault::responseMap).collect(Collectors.toList());
+        return ResponseEntity.ok().body(DataResponse.<FaultResponse>builder()
+                .data(faultResponseList)
+                .page(faultDataResponse.getPage())
+                .size(faultDataResponse.getSize())
+                .build()
         );
+
     }
 
     @PutMapping("/fault/{uuid}/update")

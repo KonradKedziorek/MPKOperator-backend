@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.FaultResponse;
 import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 
 import javax.persistence.*;
@@ -72,6 +73,20 @@ public class Fault {
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
                 .faultStatus(FaultStatus.REPORTED)
+                .build();
+    }
+
+    public static FaultResponse responseMap(Fault fault) {
+        return FaultResponse.builder()
+                .uuid(fault.getUuid())
+                .dateOfEvent(fault.getDateOfEvent())
+                .placeOfEvent(fault.getPlaceOfEvent())
+                .description(fault.getDescription())
+                .createdBy(fault.getCreatedBy())
+                .createdAt(fault.getCreatedAt())
+                .modifiedBy(fault.getModifiedBy())
+                .modifiedAt(fault.getModifiedAt())
+                .faultStatus(fault.getFaultStatus())
                 .build();
     }
 }
