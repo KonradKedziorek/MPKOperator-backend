@@ -1,16 +1,23 @@
 package pl.kedziorek.mpkoperator.domain;
 
 import lombok.*;
+import org.apache.commons.text.RandomStringGenerator;
+import org.cryptacular.generator.RandomIdGenerator;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.config.validator.emailValidator.UniqueEmail;
 import pl.kedziorek.mpkoperator.config.validator.peselValidator.UniquePesel;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
+import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -56,6 +63,12 @@ public class User {
     @UniquePhoneNumber(message = "User with this phone number already exist!")
     private String phoneNumber;
 
+    @CreatedBy
+    private String createdBy;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
@@ -70,5 +83,22 @@ public class User {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public static User map(UserRequest userRequest) {
+        RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
+        return User.builder()
+                .uuid(UUID.randomUUID())
+                .name(userRequest.getName())
+                .surname(userRequest.getSurname())
+                .username(userRequest.getUsername())
+                .email(userRequest.getEmail())
+                .password(randomStringGenerator.generate(9))
+                .pesel(userRequest.getPesel())
+                .phoneNumber(userRequest.getPhoneNumber())
+                .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
+                .createdAt(LocalDateTime.now())
+                .roles((Set<Role>) userRequest.getRoles())
+                .build();
     }
 }

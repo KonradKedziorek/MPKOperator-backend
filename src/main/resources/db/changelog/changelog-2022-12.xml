@@ -123,4 +123,17 @@
                           tableName="fault_history"/>
     </changeSet>
 
+    <changeSet id="add_created_at_and_by_in_user_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
+import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
+import pl.kedziorek.mpkoperator.service.EmailService;
 import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.transaction.Transactional;
@@ -29,13 +31,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     @Valid
-    public User saveUser(User user) {
-        log.info("Saving new user {} to the database", user.getName());
+    public User saveUser(UserRequest userRequest) {
+        log.info("Saving new user to the database");
+        User user = User.map(userRequest);
+        emailService.sendMail(emailService.prepareInfoMailAboutCreatedAccount(
+                userRequest.getEmail(),
+                userRequest.getName(),
+                user.getPassword(),
+                user.getCreatedBy()));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setUuid(UUID.randomUUID());
         return userRepository.save(user);
     }
 
