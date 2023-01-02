@@ -1,15 +1,11 @@
 package pl.kedziorek.mpkoperator.domain.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import pl.kedziorek.mpkoperator.config.validator.emailValidator.UniqueEmail;
 import pl.kedziorek.mpkoperator.config.validator.peselValidator.UniquePesel;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
-import pl.kedziorek.mpkoperator.domain.Role;
-import pl.kedziorek.mpkoperator.repository.RoleRepository;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

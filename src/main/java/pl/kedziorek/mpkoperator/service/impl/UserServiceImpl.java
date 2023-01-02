@@ -40,13 +40,16 @@ public class UserServiceImpl implements UserService {
     public User saveUser(UserRequest userRequest) {
         log.info("Saving new user to the database");
         User user = User.map(userRequest, roleService);
+        String notEncodedPassword = user.getPassword();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
         emailService.sendMail(emailService.prepareInfoMailAboutCreatedAccount(
+                user.getId(),
                 userRequest.getEmail(),
                 userRequest.getName(),
-                user.getPassword(),
+                notEncodedPassword,
                 user.getCreatedBy()));
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        return user;
     }
 
     @Override
