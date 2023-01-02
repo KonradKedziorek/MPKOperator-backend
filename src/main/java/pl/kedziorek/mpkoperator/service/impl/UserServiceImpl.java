@@ -15,6 +15,7 @@ import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
 import pl.kedziorek.mpkoperator.service.EmailService;
+import pl.kedziorek.mpkoperator.service.RoleService;
 import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.transaction.Transactional;
@@ -32,12 +33,13 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final RoleService roleService;
 
     @Override
     @Valid
     public User saveUser(UserRequest userRequest) {
         log.info("Saving new user to the database");
-        User user = User.map(userRequest);
+        User user = User.map(userRequest, roleService);
         emailService.sendMail(emailService.prepareInfoMailAboutCreatedAccount(
                 userRequest.getEmail(),
                 userRequest.getName(),

@@ -2,8 +2,8 @@ package pl.kedziorek.mpkoperator.domain;
 
 import lombok.*;
 import org.apache.commons.text.RandomStringGenerator;
-import org.cryptacular.generator.RandomIdGenerator;
 import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,12 +13,18 @@ import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhon
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
 import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
+import pl.kedziorek.mpkoperator.repository.RoleRepository;
+import pl.kedziorek.mpkoperator.service.RoleService;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -85,7 +91,7 @@ public class User {
         return getClass().hashCode();
     }
 
-    public static User map(UserRequest userRequest) {
+    public static User map(UserRequest userRequest, RoleService roleService) {
         RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
         return User.builder()
                 .uuid(UUID.randomUUID())
@@ -98,7 +104,7 @@ public class User {
                 .phoneNumber(userRequest.getPhoneNumber())
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
-                .roles((Set<Role>) userRequest.getRoles())
+                .roles(roleService.getRolesByNames(userRequest.getRoles()))
                 .build();
     }
 }

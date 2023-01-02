@@ -9,6 +9,7 @@ import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhon
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
 import pl.kedziorek.mpkoperator.domain.Role;
+import pl.kedziorek.mpkoperator.repository.RoleRepository;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -46,7 +47,5 @@ public class UserRequest {
     @UniquePhoneNumber(message = "User with this phone number already exist!")
     private String phoneNumber;
 
-    // TODO Z rolami jak sie wpisuje to nie mozna stworzyc usera idk why!!!! DO ZROBIENIA FAST
-    @JsonProperty("roles")
-    private Set<Role> roles = new HashSet<>();
+    private Set<String> roles = new HashSet<>();
 }

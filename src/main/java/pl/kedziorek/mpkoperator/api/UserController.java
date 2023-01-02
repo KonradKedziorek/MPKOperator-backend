@@ -43,8 +43,6 @@ public class UserController {
 
     private final AuthService authenticate;
 
-    private final EmailService emailService;
-
     private final JwtUtils jwtUtils;
 
     @Value("${domain}")
@@ -62,7 +60,6 @@ public class UserController {
 
     @PostMapping("/user/save")
     public ResponseEntity<User> saveUser(@Validated @RequestBody UserRequest user) {
-
         return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
