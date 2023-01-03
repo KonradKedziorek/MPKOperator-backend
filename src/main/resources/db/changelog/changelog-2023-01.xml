@@ -1,0 +1,70 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_address_table" author="Konrad Kedziorek">
+        <createTable tableName="address">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postcode" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="varchar(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="local_number" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="house_number" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_at" type="datetime" >
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-address-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="address"/>
+    </changeSet>
+
+    <changeSet id="add_modified_at_and_by_and_address_fields_in_user_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="modified_at" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="address_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

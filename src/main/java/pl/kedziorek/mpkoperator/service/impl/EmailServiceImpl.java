@@ -49,7 +49,7 @@ public class EmailServiceImpl implements EmailService {
                 "Name: Jan \n" +
                 "Surname: Kowalski \n" +
                 "Id: 1 \n" +
-                "Then your username is like: jan_kowalski_1). \n\n" +
+                "Then your username is like: jan_kowalski_1. \n\n" +
                 "You can change password in your account settings (and it is advised to do this as fast as you can!) \n\n" +
                 "In case some troubles with logging in, contact admin (for example " + createdBy + ")\n\n" +
                 "With regards, \n" +

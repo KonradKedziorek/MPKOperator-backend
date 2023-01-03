@@ -107,7 +107,6 @@
             <artifactId>spring-boot-starter-mail</artifactId>
             <version>${spring-boot-starter-mail.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>

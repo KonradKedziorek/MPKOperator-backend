@@ -1,11 +1,13 @@
 package pl.kedziorek.mpkoperator.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.apache.commons.text.RandomStringGenerator;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.config.validator.emailValidator.UniqueEmail;
 import pl.kedziorek.mpkoperator.config.validator.peselValidator.UniquePesel;
@@ -13,7 +15,6 @@ import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhon
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
 import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
-import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.service.RoleService;
 
 import javax.persistence.*;
@@ -24,7 +25,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -75,8 +75,19 @@ public class User {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @LastModifiedBy
+    private String modifiedBy;
+
+    @LastModifiedDate
+    private LocalDateTime modifiedAt;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    @JsonIgnore
+    private Address address;
 
     @Override
     public boolean equals(Object o) {
