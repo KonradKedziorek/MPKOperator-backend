@@ -31,17 +31,17 @@ public class AddressServiceImpl implements AddressService {
     public Address findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
             String city, String postcode, String street, String localNumber, String houseNumber) {
         return addressRepository.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
-                city, postcode, street, localNumber, houseNumber).orElse(addressRepository.save(
-                        Address.builder()
-                                .uuid(UUID.randomUUID())
-                                .city(city)
-                                .postcode(postcode)
-                                .street(street)
-                                .localNumber(localNumber)
-                                .houseNumber(houseNumber)
-                                .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
-                                .createdAt(LocalDateTime.now())
-                                .build()
-        ));
+                city, postcode, street, localNumber, houseNumber).orElseGet(() -> (addressRepository.save(
+                Address.builder()
+                        .uuid(UUID.randomUUID())
+                        .city(city)
+                        .postcode(postcode)
+                        .street(street)
+                        .localNumber(localNumber)
+                        .houseNumber(houseNumber)
+                        .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
+                        .createdAt(LocalDateTime.now())
+                        .build()
+        )));
     }
 }
