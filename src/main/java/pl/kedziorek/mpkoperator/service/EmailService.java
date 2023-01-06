@@ -10,4 +10,5 @@ public interface EmailService {
             String name,
             String password,
             String createdBy);
+    SimpleMailMessage prepareMailToResetPassword(String email, String name, String password);
 }

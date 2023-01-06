@@ -12,15 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.config.JwtUtils;
+import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
-import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.AuthResponse;
 import pl.kedziorek.mpkoperator.domain.dto.Credentials;
 import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
 import pl.kedziorek.mpkoperator.domain.dto.response.LoggedInResponse;
 import pl.kedziorek.mpkoperator.service.AuthService;
-import pl.kedziorek.mpkoperator.service.EmailService;
 import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.servlet.http.Cookie;
@@ -59,8 +59,13 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<User> saveUser(@Validated @RequestBody UserRequest user) {
+    public ResponseEntity<User> saveUser(@Validated @RequestBody CreateUserRequest user) {
         return ResponseEntity.ok().body(userService.saveUser(user));
+    }
+
+    @PutMapping("/user/resetPassword")
+    public ResponseEntity<User> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        return ResponseEntity.ok().body(userService.resetPassword(resetPasswordRequest));
     }
 
     @PostMapping("/role/save")

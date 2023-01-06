@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
 
+    @Override
     public void sendMail(SimpleMailMessage msg) {
         if (msg != null) {
             javaMailSender.send(msg);
@@ -25,7 +26,8 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    public SimpleMailMessage prepareInfoMailAboutCreatedAccount (
+    @Override
+    public SimpleMailMessage prepareInfoMailAboutCreatedAccount(
             Long id,
             String email,
             String name,
@@ -50,8 +52,28 @@ public class EmailServiceImpl implements EmailService {
                 "Surname: Kowalski \n" +
                 "Id: 1 \n" +
                 "Then your username is like: jan_kowalski_1. \n\n" +
+                "You can change password in your account settings (and it is advised to do this as fast as you can!). \n\n" +
+                "In case some troubles with logging in, contact admin (for example " + createdBy + ").\n\n" +
+                "With regards, \n" +
+                "MPKOperator");
+
+        return msg;
+    }
+
+    @Override
+    public SimpleMailMessage prepareMailToResetPassword(String email, String name, String password) {
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(email);
+
+        // TODO mail zmienic ewentualnie na jakis inzynierkowy juz
+        msg.setFrom("mpkOperator@email.com");
+
+        msg.setSubject("MPKOperator Password Reset");
+
+        msg.setText("Hello " + name + "! \n\n" +
+                "Here is your new password: " + password + "\n\n" +
                 "You can change password in your account settings (and it is advised to do this as fast as you can!) \n\n" +
-                "In case some troubles with logging in, contact admin (for example " + createdBy + ")\n\n" +
                 "With regards, \n" +
                 "MPKOperator");
 

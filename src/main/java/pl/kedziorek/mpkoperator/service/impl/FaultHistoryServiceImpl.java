@@ -18,7 +18,6 @@ import java.util.UUID;
 public class FaultHistoryServiceImpl implements FaultHistoryService {
     private final FaultHistoryRepository faultHistoryRepository;
 
-
     @Override
     public FaultHistory saveComplaintInFaultHistory(Fault fault, UUID uuid) {
         log.info("Saving new fault in complaint history to the database");

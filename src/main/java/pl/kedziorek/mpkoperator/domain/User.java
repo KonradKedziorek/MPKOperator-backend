@@ -14,7 +14,7 @@ import pl.kedziorek.mpkoperator.config.validator.peselValidator.UniquePesel;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
-import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
 import pl.kedziorek.mpkoperator.service.RoleService;
 
 import javax.persistence.*;
@@ -84,7 +84,7 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     @JsonIgnore
     private Address address;
@@ -102,20 +102,21 @@ public class User {
         return getClass().hashCode();
     }
 
-    public static User map(UserRequest userRequest, RoleService roleService) {
+    public static User map(CreateUserRequest createUserRequest, Set<Role> roles) {
         RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
+
         return User.builder()
                 .uuid(UUID.randomUUID())
-                .name(userRequest.getName())
-                .surname(userRequest.getSurname())
-                .username(userRequest.getUsername())
-                .email(userRequest.getEmail())
+                .name(createUserRequest.getName())
+                .surname(createUserRequest.getSurname())
+                .username(createUserRequest.getUsername())
+                .email(createUserRequest.getEmail())
                 .password(randomStringGenerator.generate(9))
-                .pesel(userRequest.getPesel())
-                .phoneNumber(userRequest.getPhoneNumber())
+                .pesel(createUserRequest.getPesel())
+                .phoneNumber(createUserRequest.getPhoneNumber())
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
-                .roles(roleService.getRolesByNames(userRequest.getRoles()))
+                .roles(roles)
                 .build();
     }
 }

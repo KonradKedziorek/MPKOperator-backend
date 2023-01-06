@@ -2,27 +2,25 @@ package pl.kedziorek.mpkoperator.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
+import pl.kedziorek.mpkoperator.domain.Address;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
-import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
+import pl.kedziorek.mpkoperator.service.AddressService;
 import pl.kedziorek.mpkoperator.service.EmailService;
 import pl.kedziorek.mpkoperator.service.RoleService;
 import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -34,21 +32,54 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final RoleService roleService;
+    private final AddressService addressService;
 
     @Override
     @Valid
-    public User saveUser(UserRequest userRequest) {
+    public User saveUser(CreateUserRequest createUserRequest) {
         log.info("Saving new user to the database");
-        User user = User.map(userRequest, roleService);
+        Set<Role> roles = roleService.getRolesByNames(createUserRequest.getRoles());
+
+        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
+                createUserRequest.getCity(),
+                createUserRequest.getPostcode(),
+                createUserRequest.getStreet(),
+                createUserRequest.getLocalNumber(),
+                createUserRequest.getHouseNumber()
+        );
+        log.info("log po adresie");
+        User user = User.map(createUserRequest, roles);
+
         String notEncodedPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        log.info("log przed set adres");
+        user.setAddress(address);
+        log.info("log po set adres");
+//        User user1 = userRepository.save(user);
+//        address.setUs
+        log.info("log przed save user");
         userRepository.save(user);
+
         emailService.sendMail(emailService.prepareInfoMailAboutCreatedAccount(
                 user.getId(),
-                userRequest.getEmail(),
-                userRequest.getName(),
+                createUserRequest.getEmail(),
+                createUserRequest.getName(),
                 notEncodedPassword,
                 user.getCreatedBy()));
+
+        return user;
+    }
+
+    @Override
+    public User resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        User user = userRepository.findByEmail(resetPasswordRequest.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
+
+        RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
+
+        String password = randomStringGenerator.generate(9);
+        user.setPassword(passwordEncoder.encode(password));
+        emailService.sendMail(emailService.prepareMailToResetPassword(resetPasswordRequest.getEmail(), user.getName(), password));
         return user;
     }
 
@@ -62,10 +93,10 @@ public class UserServiceImpl implements UserService {
     public void addRoleToUser(String username, String roleName) {
         log.info("Adding role {} to user {}", roleName, username);
         User user = userRepository.findByUsername(username)
-                .orElseThrow(()-> new ResourceNotFoundException("User not found in the database"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
 
         Role role = roleRepository.findByName(roleName)
-                .orElseThrow(()-> new ResourceNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Role %s not found in the database", roleName)));
         user.getRoles().add(role);
     }
@@ -74,6 +105,6 @@ public class UserServiceImpl implements UserService {
     public User getUser(String username) {
         log.info("Fetching user {}", username);
         return userRepository.findByUsername(username)
-                .orElseThrow(()-> new ResourceNotFoundException("User not found in the database"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
     }
 }

@@ -61,7 +61,8 @@ public class Fault {
     @OneToMany(mappedBy = "fault")
     private Set<Comment> comments;
 
-    //TODO Tu sie doda jeszcze jaki autobus
+    //TODO Tu sie doda jeszcze jakis autobus 1:1
+    //TODO Autobus mialby uuid swoj a w usterce bylby uuid autobusu tylko
 
     public static Fault map(FaultRequest faultRequest) {
         return Fault.builder()

@@ -18,7 +18,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
+public class CreateUserRequest {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
@@ -42,6 +42,16 @@ public class UserRequest {
     @ValidPhoneNumber(message = "Invalid phone number!")
     @UniquePhoneNumber(message = "User with this phone number already exist!")
     private String phoneNumber;
+
+    private String city;
+
+    private String postcode;
+
+    private String street;
+
+    private String localNumber;
+
+    private String houseNumber;
 
     private Set<String> roles = new HashSet<>();
 }
