@@ -3,14 +3,18 @@ package pl.kedziorek.mpkoperator.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.RandomStringGenerator;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.kedziorek.mpkoperator.config.exception.BadRequestException;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Address;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
 import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
 import pl.kedziorek.mpkoperator.service.AddressService;
@@ -20,8 +24,10 @@ import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +88,29 @@ public class UserServiceImpl implements UserService {
         emailService.sendMail(emailService.prepareMailToResetPassword(resetPasswordRequest.getEmail(), user.getName(), password));
         return user;
     }
+
+    @Override
+    public User updateUsersPassword(UpdateUsersPasswordRequest passwordRequest, UUID uuid) {
+        User updatedUser = userRepository.findByUuid(uuid).orElseThrow(() ->
+                new ResourceNotFoundException("User not found in the database"));
+
+        log.info("Updating user's password with uuid: {} to the database", updatedUser.getUuid());
+        updatedUser.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        updatedUser.setModifiedAt(LocalDateTime.now());
+
+        if (passwordEncoder.matches(passwordRequest.getOldPassword(), updatedUser.getPassword())) {
+            if (passwordRequest.getNewPassword().equals(passwordRequest.getRepeatNewPassword())) {
+                updatedUser.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
+            } else {
+                throw new BadRequestException("New password and repeated new password not matches!");
+            }
+        } else {
+            throw new BadRequestException("Wrong password!");
+        }
+        return updatedUser;
+    }
+
+    //TODO Change role method
 
     @Override
     public Role saveRole(Role role) {
