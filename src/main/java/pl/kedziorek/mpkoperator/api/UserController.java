@@ -16,6 +16,7 @@ import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
 import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUserDataRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.AuthResponse;
 import pl.kedziorek.mpkoperator.domain.dto.Credentials;
@@ -74,6 +75,13 @@ public class UserController {
             @RequestBody UpdateUsersPasswordRequest usersPasswordRequest,
             @PathVariable UUID uuid) {
         return ResponseEntity.ok().body(userService.updateUsersPassword(usersPasswordRequest, uuid));
+    }
+
+    @PutMapping("/user/{uuid}/updateUserData")
+    public ResponseEntity<User> updateUserData(
+            @RequestBody UpdateUserDataRequest updateUserDataRequest,
+            @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(userService.updateUsersData(updateUserDataRequest, uuid));
     }
 
     @PostMapping("/role/save")

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.BadRequestException;
@@ -14,6 +13,7 @@ import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
 import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUserDataRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
@@ -107,7 +107,38 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new BadRequestException("Wrong password!");
         }
-        return updatedUser;
+        return userRepository.save(updatedUser);
+    }
+
+    @Override
+    public User updateUsersData(UpdateUserDataRequest updateUserDataRequest, UUID uuid) {
+        User updatedUser = userRepository.findByUuid(uuid).orElseThrow(() ->
+                new ResourceNotFoundException("User not found in the database"));
+
+        Set<Role> roles = roleService.getRolesByNames(updateUserDataRequest.getRoles());
+
+        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
+                updateUserDataRequest.getCity(),
+                updateUserDataRequest.getPostcode(),
+                updateUserDataRequest.getStreet(),
+                updateUserDataRequest.getLocalNumber(),
+                updateUserDataRequest.getHouseNumber()
+        );
+
+        log.info("Updating user's password with uuid: {} to the database", updatedUser.getUuid());
+        updatedUser.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        updatedUser.setModifiedAt(LocalDateTime.now());
+        updatedUser.setName(updateUserDataRequest.getName());
+        updatedUser.setSurname(updateUserDataRequest.getSurname());
+        updatedUser.setEmail(updateUserDataRequest.getEmail());
+        updatedUser.setPassword(passwordEncoder.encode(updateUserDataRequest.getPassword()));
+        updatedUser.setPesel(updateUserDataRequest.getPesel());
+        updatedUser.setPhoneNumber(updateUserDataRequest.getPhoneNumber());
+        updatedUser.setAddress(address);
+        updatedUser.setIsActive(updateUserDataRequest.getIsActive());
+        updatedUser.setRoles(roles);
+
+        return userRepository.save(updatedUser);
     }
 
     //TODO Change role method
