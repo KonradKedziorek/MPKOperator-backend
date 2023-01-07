@@ -20,6 +20,7 @@ import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -47,18 +48,17 @@ public class UserServiceImpl implements UserService {
                 createUserRequest.getLocalNumber(),
                 createUserRequest.getHouseNumber()
         );
-        log.info("log po adresie");
         User user = User.map(createUserRequest, roles);
 
         String notEncodedPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        log.info("log przed set adres");
         user.setAddress(address);
-        log.info("log po set adres");
-//        User user1 = userRepository.save(user);
-//        address.setUs
-        log.info("log przed save user");
+
+        RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
+        user.setUsername(randomStringGenerator.generate(10));
+
         userRepository.save(user);
+        user.setUsername((createUserRequest.getName() + "_" + createUserRequest.getSurname() + "_" + user.getId()).toLowerCase(Locale.ROOT));
 
         emailService.sendMail(emailService.prepareInfoMailAboutCreatedAccount(
                 user.getId(),

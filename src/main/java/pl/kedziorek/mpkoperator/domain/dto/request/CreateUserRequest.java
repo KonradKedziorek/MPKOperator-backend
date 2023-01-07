@@ -25,10 +25,6 @@ public class CreateUserRequest {
     @NotBlank(message = "Surname is mandatory")
     private String surname;
 
-    @NotBlank(message = "Username is mandatory")
-    @UniqueUsername(message = "User with this username already exist!")
-    private String username;
-
     @NotBlank(message = "Email is mandatory")
     @UniqueEmail(message = "User with this email address already exist!")
     @Email

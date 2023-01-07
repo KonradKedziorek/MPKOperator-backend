@@ -109,7 +109,6 @@ public class User {
                 .uuid(UUID.randomUUID())
                 .name(createUserRequest.getName())
                 .surname(createUserRequest.getSurname())
-                .username(createUserRequest.getUsername())
                 .email(createUserRequest.getEmail())
                 .password(randomStringGenerator.generate(9))
                 .pesel(createUserRequest.getPesel())
