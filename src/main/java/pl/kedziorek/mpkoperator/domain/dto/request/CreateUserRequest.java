@@ -5,7 +5,6 @@ import pl.kedziorek.mpkoperator.config.validator.emailValidator.UniqueEmail;
 import pl.kedziorek.mpkoperator.config.validator.peselValidator.UniquePesel;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
-import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;

@@ -89,6 +89,8 @@ public class User {
     @JsonIgnore
     private Address address;
 
+    private Boolean isActive;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -116,6 +118,7 @@ public class User {
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
                 .roles(roles)
+                .isActive(true)
                 .build();
     }
 }
