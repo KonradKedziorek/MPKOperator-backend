@@ -12,16 +12,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.config.JwtUtils;
-import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
+import pl.kedziorek.mpkoperator.domain.dto.Credentials;
+import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
 import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUserDataRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.AuthResponse;
-import pl.kedziorek.mpkoperator.domain.dto.Credentials;
-import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
+import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.LoggedInResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.UserResponse;
 import pl.kedziorek.mpkoperator.service.AuthService;
 import pl.kedziorek.mpkoperator.service.UserService;
 
@@ -42,9 +44,7 @@ import static pl.kedziorek.mpkoperator.utils.CookieUtils.buildCookie;
 @Slf4j
 public class UserController {
     private final UserService userService;
-
     private final AuthService authenticate;
-
     private final JwtUtils jwtUtils;
 
     @Value("${domain}")
@@ -82,6 +82,21 @@ public class UserController {
             @RequestBody UpdateUserDataRequest updateUserDataRequest,
             @PathVariable UUID uuid) {
         return ResponseEntity.ok().body(userService.updateUsersData(updateUserDataRequest, uuid));
+    }
+
+    @PostMapping("/users/page={page}/size={size}")
+    public ResponseEntity<?> getUsers(
+            @PathVariable int page,
+            @PathVariable int size,
+            @RequestBody Map<String, String> params) {
+        DataResponse<User> userDataResponse = userService.getUsers(params, page, size);
+        List<User> userList = userDataResponse.getData();
+        return ResponseEntity.ok().body(DataResponse.<User>builder()
+                .data(userList)
+                .page(userDataResponse.getPage())
+                .size(userDataResponse.getSize())
+                .build()
+        );
     }
 
     @PostMapping("/role/save")

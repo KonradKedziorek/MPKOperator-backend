@@ -1,6 +1,5 @@
 package pl.kedziorek.mpkoperator.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.apache.commons.text.RandomStringGenerator;
 import org.hibernate.Hibernate;
@@ -15,7 +14,7 @@ import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhon
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
 import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
-import pl.kedziorek.mpkoperator.service.RoleService;
+import pl.kedziorek.mpkoperator.domain.dto.response.UserResponse;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -84,9 +83,8 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
-    @JsonIgnore
     private Address address;
 
     private Boolean isActive;
@@ -106,7 +104,6 @@ public class User {
 
     public static User map(CreateUserRequest createUserRequest, Set<Role> roles) {
         RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
-
         return User.builder()
                 .uuid(UUID.randomUUID())
                 .name(createUserRequest.getName())
@@ -119,6 +116,21 @@ public class User {
                 .createdAt(LocalDateTime.now())
                 .roles(roles)
                 .isActive(true)
+                .build();
+    }
+
+    //TODO użyć poprawić bo userów pobieram całych
+    public static UserResponse responseMap(User user) {
+        return UserResponse.builder()
+                .uuid(user.getUuid())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .roles(user.getRoles())
+                .address(user.getAddress())
+                .isActive(user.getIsActive())
                 .build();
     }
 }
