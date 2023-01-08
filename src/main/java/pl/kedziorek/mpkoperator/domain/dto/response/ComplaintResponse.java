@@ -17,4 +17,6 @@ public class ComplaintResponse {
     private String surnameOfNotifier;
     private String peselOfNotifier;
     private ComplaintStatus complaintStatus;
+    public String contactToNotifier;
+    public String description;
 }

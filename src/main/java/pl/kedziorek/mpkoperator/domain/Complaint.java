@@ -1,5 +1,6 @@
 package pl.kedziorek.mpkoperator.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -7,6 +8,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.CommentResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.ComplaintDetailsResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.ComplaintResponse;
 import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 
@@ -14,8 +17,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -68,14 +74,14 @@ public class Complaint {
     private ComplaintStatus complaintStatus;
 
     @OneToMany(mappedBy = "complaint")
-    private Set<Comment> comments;
+    private List<Comment> comments;
 
     private LocalDate date;
 
     public static Complaint map(ComplaintRequest complaintRequest) {
         return Complaint.builder()
-                .uuid(UUID.randomUUID())
-                .dateOfEvent(complaintRequest.getDateOfEvent())
+                .uuid(Objects.equals(complaintRequest.getUuid(), "") ? UUID.randomUUID() : UUID.fromString(complaintRequest.getUuid()))
+                .dateOfEvent(LocalDateTime.now())
                 .placeOfEvent(complaintRequest.getPlaceOfEvent())
                 .nameOfNotifier(complaintRequest.getNameOfNotifier())
                 .surnameOfNotifier(complaintRequest.getSurnameOfNotifier())
@@ -98,6 +104,29 @@ public class Complaint {
                 .surnameOfNotifier(complaint.getSurnameOfNotifier())
                 .peselOfNotifier(complaint.getPeselOfNotifier())
                 .complaintStatus(complaint.getComplaintStatus())
+                .description(complaint.getDescription())
+                .contactToNotifier(complaint.getContactToNotifier())
+                .build();
+    }
+
+    public static ComplaintDetailsResponse mapToComplaintDetailsResponse(Complaint complaint){
+        List<CommentResponse> commentResponseList = complaint.getComments().stream().map(Comment::mapToCommentResponse).collect(Collectors.toList());
+        return ComplaintDetailsResponse.builder()
+                .uuid(complaint.getUuid())
+                .dateOfEvent(complaint.getDateOfEvent())
+                .placeOfEvent(complaint.getPlaceOfEvent())
+                .description(complaint.getDescription())
+                .nameOfNotifier(complaint.getNameOfNotifier())
+                .surnameOfNotifier(complaint.getSurnameOfNotifier())
+                .peselOfNotifier(complaint.getPeselOfNotifier())
+                .contactToNotifier(complaint.getContactToNotifier())
+                .createdBy(complaint.getCreatedBy())
+                .createdAt(complaint.getCreatedAt())
+                .modifiedBy(complaint.getModifiedBy())
+                .modifiedAt(complaint.getModifiedAt())
+                .complaintStatus(complaint.getComplaintStatus())
+                .date(complaint.getDate())
+                .comments(commentResponseList)
                 .build();
     }
 }

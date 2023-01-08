@@ -14,6 +14,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -59,7 +60,7 @@ public class Fault {
     private FaultStatus faultStatus;
 
     @OneToMany(mappedBy = "fault")
-    private Set<Comment> comments;
+    private List<Comment> comments;
 
     //TODO Tu sie doda jeszcze jakis autobus 1:1
     //TODO Autobus mialby uuid swoj a w usterce bylby uuid autobusu tylko

@@ -4,16 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import pl.kedziorek.mpkoperator.domain.Comment;
 import pl.kedziorek.mpkoperator.domain.Complaint;
+import pl.kedziorek.mpkoperator.domain.dto.request.CommentRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
-import pl.kedziorek.mpkoperator.domain.dto.response.ComplaintResponse;
-import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.*;
+import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static pl.kedziorek.mpkoperator.domain.Complaint.mapToComplaintDetailsResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -26,7 +30,7 @@ public class ComplaintController {
             @Validated
             @RequestBody
                     ComplaintRequest complaint) {
-        return ResponseEntity.ok().body(complaintService.saveComplaint(complaint));
+        return ResponseEntity.ok().body(complaintService.saveOfUpdateComplaint(complaint));
     }
 
     @PostMapping("/complaints/page={page}/size={size}")
@@ -44,13 +48,25 @@ public class ComplaintController {
         );
     }
 
-    @GetMapping("/complaint/{uuid}")
-    public ResponseEntity<Complaint> getComplaint(@PathVariable UUID uuid) {
-        return ResponseEntity.ok().body(complaintService.findByUuid(uuid));
+    @GetMapping("/complaint/uuid={uuid}")
+    public ResponseEntity<ComplaintDetailsResponse> getComplaint(@PathVariable UUID uuid) {
+        Complaint complaint = complaintService.findByUuid(uuid);
+        return ResponseEntity.ok().body(mapToComplaintDetailsResponse(complaint));
     }
 
-    @PutMapping("/complaint/{uuid}/update")
-    public ResponseEntity<Complaint> updateComplaint(@RequestBody Complaint complaint, @PathVariable UUID uuid) {
-        return ResponseEntity.ok().body(complaintService.updateComplaint(complaint, uuid));
+    @PutMapping("/complaint/{uuid}/{complaintStatus}")
+    public ResponseEntity<Complaint> updateComplaint(@PathVariable ComplaintStatus complaintStatus, @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(complaintService.updateComplaintStatus(complaintStatus, uuid));
+    }
+
+    @PostMapping("/complaint/uuid={uuid}")
+    public ResponseEntity<CommentReplay> addComment(@PathVariable UUID uuid, @RequestBody CommentRequest commentRequest) {
+        List<Comment> commentList = complaintService.createComment(uuid, commentRequest.getContent());
+        List<CommentResponse> commentResponses = commentList.stream().map(Comment::mapToCommentResponse).collect(Collectors.toList());
+        return ResponseEntity.ok().body(CommentReplay.builder()
+                .uuid(uuid)
+                .commentResponseList(commentResponses)
+                .build());
+
     }
 }

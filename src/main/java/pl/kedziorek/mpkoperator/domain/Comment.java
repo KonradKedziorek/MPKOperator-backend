@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import pl.kedziorek.mpkoperator.domain.dto.response.CommentResponse;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,5 +63,13 @@ public class Comment {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public static CommentResponse mapToCommentResponse(Comment comment){
+        return CommentResponse.builder()
+                .content(comment.getContent())
+                .createdAt(comment.getCreatedAt())
+                .createdBy(comment.getCreatedBy())
+                .build();
     }
 }
