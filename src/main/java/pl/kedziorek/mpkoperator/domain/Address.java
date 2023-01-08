@@ -1,5 +1,6 @@
 package pl.kedziorek.mpkoperator.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedBy;
@@ -11,7 +12,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -50,6 +50,7 @@ public class Address {
     private LocalDateTime modifiedAt;
 
     @OneToMany(mappedBy = "address")
+    @JsonIgnore
     private List<User> users;
 
     @Override

@@ -17,7 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserRequest {
+public class UpdateUserDataRequest {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
@@ -28,6 +28,9 @@ public class CreateUserRequest {
     @UniqueEmail(message = "User with this email address already exist!")
     @Email
     private String email;
+
+    @NotBlank(message = "Password is mandatory")
+    private String password;
 
     @NotBlank(message = "Pesel is mandatory")
     @UniquePesel(message = "User with this pesel already exist!")
@@ -51,6 +54,8 @@ public class CreateUserRequest {
 
     @NotBlank(message = "House Number is mandatory")
     private String houseNumber;
+
+    private Boolean isActive;
 
     private Set<String> roles = new HashSet<>();
 }
