@@ -1,6 +1,5 @@
 package pl.kedziorek.mpkoperator.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,9 +16,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -81,7 +80,7 @@ public class Complaint {
     public static Complaint map(ComplaintRequest complaintRequest) {
         return Complaint.builder()
                 .uuid(Objects.equals(complaintRequest.getUuid(), "") ? UUID.randomUUID() : UUID.fromString(complaintRequest.getUuid()))
-                .dateOfEvent(LocalDateTime.now())
+                .dateOfEvent(LocalDateTime.of(LocalDate.parse(complaintRequest.getDateOfEvent()), LocalTime.parse(complaintRequest.getTimeOfEvent())))
                 .placeOfEvent(complaintRequest.getPlaceOfEvent())
                 .nameOfNotifier(complaintRequest.getNameOfNotifier())
                 .surnameOfNotifier(complaintRequest.getSurnameOfNotifier())
@@ -91,7 +90,7 @@ public class Complaint {
                 .complaintStatus(ComplaintStatus.RECEIVED)
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
-                .date(LocalDate.now())
+                .date(LocalDate.parse(complaintRequest.getDateOfEvent()))
                 .build();
     }
 

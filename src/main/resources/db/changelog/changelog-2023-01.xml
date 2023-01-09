@@ -69,7 +69,7 @@
 
     <changeSet id="add_is_active_field_in_user_table" author="Konrad Kedziorek">
         <addColumn schemaName= "public" tableName="user" >
-            <column name="is_active" type="boolean">
+            <column name="is_active" type="boolean" defaultValue="true">
                 <constraints nullable="false"/>
             </column>
         </addColumn>

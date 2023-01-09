@@ -1,36 +1,36 @@
 package pl.kedziorek.mpkoperator.domain.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @Builder
 public class ComplaintRequest {
-    private LocalDateTime dateOfEvent;
 
-    @NotBlank
+    @NotBlank(message = "Date of event cannot be blank")
+    private String dateOfEvent;
+
+    @NotBlank(message = "Time of event cannot be blank")
+    private String timeOfEvent;
+
+    @NotBlank(message = "Place of event cannot be blank")
     private String placeOfEvent;
 
-    @NotBlank
+    @NotBlank(message = "Description cannot be blank")
     private String description;
 
-    @NotBlank
+    @NotBlank(message = "Name of notifier cannot be blank")
     private String nameOfNotifier;
 
-    @NotBlank
+    @NotBlank(message = "Surname of notifier cannot be blank")
     private String surnameOfNotifier;
 
-    @NotBlank
+    @NotBlank(message = "Pesel of notifier cannot be blank")
     private String peselOfNotifier;
 
-    @NotBlank
+    @NotBlank(message = "Contact to notifier cannot be blank")
     private String contactToNotifier;
 
     private String uuid;

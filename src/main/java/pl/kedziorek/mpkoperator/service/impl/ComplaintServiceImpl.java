@@ -18,11 +18,10 @@ import pl.kedziorek.mpkoperator.service.ComplaintHistoryService;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.kedziorek.mpkoperator.utils.LocalDateConverter.convertToLocalDate;
@@ -40,7 +39,7 @@ public class ComplaintServiceImpl implements ComplaintService<Complaint> {
     public Complaint saveOfUpdateComplaint(ComplaintRequest complaintRequest) {
         log.info("Saving new complaint to the database");
         //if uuid is null should create new object
-        if (complaintRequest.getUuid() == null) {
+        if (Objects.equals(complaintRequest.getUuid(), "")) {
             return saveComplaint(complaintRequest);
         }//else update existing object
         return editComplaint(complaintRequest);
@@ -70,13 +69,14 @@ public class ComplaintServiceImpl implements ComplaintService<Complaint> {
 
     @Override
     public DataResponse<Complaint> getComplaints(Map<String, String> params, int page, int size) {
-        Page<Complaint> pageComplaint = complaintRepository.findAllParams(
+      Page<Complaint> pageComplaint = complaintRepository.findAllParams(
                 params.get("placeOfEvent") == null ? "" : params.get("placeOfEvent"),
                 params.get("nameOfNotifier") == null ? "" : params.get("nameOfNotifier"),
                 params.get("surnameOfNotifier") == null ? "" : params.get("surnameOfNotifier"),
                 params.get("peselOfNotifier") == null ? "" : params.get("peselOfNotifier"),
                 params.get("createdBy") == null ? "" : params.get("createdBy"),
                 convertToLocalDate(params.get("date")),
+                params.get("complaintStatus") != null ? ComplaintStatus.valueOf(params.get("complaintStatus")) : null,
                 PageRequest.of(page, size)
         );
 
@@ -116,7 +116,7 @@ public class ComplaintServiceImpl implements ComplaintService<Complaint> {
     }
 
     private Complaint changePropertiesValue(ComplaintRequest complaintRequest, Complaint complaint) {
-        complaint.setDateOfEvent(complaintRequest.getDateOfEvent());
+        complaint.setDateOfEvent(LocalDateTime.of(LocalDate.parse(complaintRequest.getDateOfEvent()), LocalTime.now()));
         complaint.setContactToNotifier(complaintRequest.getContactToNotifier());
         complaint.setDescription(complaintRequest.getDescription());
         complaint.setNameOfNotifier(complaintRequest.getNameOfNotifier());
