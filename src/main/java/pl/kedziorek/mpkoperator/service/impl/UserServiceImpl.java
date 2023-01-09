@@ -5,22 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import pl.kedziorek.mpkoperator.config.exception.BadRequestException;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Address;
-import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
+import pl.kedziorek.mpkoperator.domain.UserImage;
 import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUserDataRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
+import pl.kedziorek.mpkoperator.repository.UserImageRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
 import pl.kedziorek.mpkoperator.service.AddressService;
 import pl.kedziorek.mpkoperator.service.EmailService;
@@ -29,6 +31,8 @@ import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.awt.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Map;
@@ -47,10 +51,11 @@ public class UserServiceImpl implements UserService<User> {
     private final EmailService emailService;
     private final RoleService roleService;
     private final AddressService addressService;
+    private final UserImageRepository userImageRepository;
 
     @Override
     @Valid
-    public User saveUser(CreateUserRequest createUserRequest) {
+    public User saveUser(CreateUserRequest createUserRequest, MultipartFile multipartFile) throws IOException {
         log.info("Saving new user to the database");
         Set<Role> roles = roleService.getRolesByNames(createUserRequest.getRoles());
 
@@ -69,6 +74,8 @@ public class UserServiceImpl implements UserService<User> {
 
         RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
         user.setUsername(randomStringGenerator.generate(10));
+
+        uploadUserImage(user, multipartFile);
 
         userRepository.save(user);
         user.setUsername((createUserRequest.getName() + "_" + createUserRequest.getSurname() + "_" + user.getId()).toLowerCase(Locale.ROOT));
@@ -193,5 +200,19 @@ public class UserServiceImpl implements UserService<User> {
         log.info("Fetching user {}", username);
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
+    }
+
+    public void uploadUserImage(User user, MultipartFile multipartFile) throws IOException {
+        if (multipartFile.getOriginalFilename() != null
+                && !StringUtils.cleanPath(multipartFile.getOriginalFilename()).contains("..")) {
+            UserImage userImage = new UserImage();
+            userImage.setBytes(multipartFile.getBytes());
+            userImage.setName(multipartFile.getOriginalFilename());
+            userImage.setUuid(UUID.randomUUID());
+
+            user.setUserImage(userImage);
+            userRepository.save(user);
+            userImageRepository.save(userImage);
+        }
     }
 }

@@ -75,4 +75,45 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add_user_image_table" author="Konrad Kedziorek">
+        <createTable tableName="user_image">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="bytes" type="blob">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_user_image_id_column_to_user_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="user_image_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-user-image-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="user_image"/>
+    </changeSet>
+
+    <changeSet  id="change-length-of-name-in-user-image" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="name"
+                newDataType="varchar(256)"
+                schemaName="public"
+                tableName="user_image"/>
+    </changeSet>
+
 </databaseChangeLog>

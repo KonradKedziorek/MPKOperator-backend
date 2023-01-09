@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.kedziorek.mpkoperator.config.JwtUtils;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
@@ -30,6 +31,7 @@ import pl.kedziorek.mpkoperator.service.UserService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -61,8 +63,11 @@ public class UserController {
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<User> saveUser(@Validated @RequestBody CreateUserRequest user) {
-        return ResponseEntity.ok().body(userService.saveUser(user));
+    public ResponseEntity<User> saveUser(
+            @Valid @RequestPart CreateUserRequest user,
+            @RequestParam(value = "file", required = false) MultipartFile multipartFile
+            ) throws IOException {
+        return ResponseEntity.ok().body(userService.saveUser(user, multipartFile));
     }
 
     @PutMapping("/user/resetPassword")

@@ -89,6 +89,11 @@ public class User {
 
     private Boolean isActive;
 
+//    @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id")    to dodać jakby się coś zapętlało
+    @OneToOne(cascade = CascadeType.ALL) //To do usuwania kaskadowego więc nie wiadomo czy się przyda
+    @JoinColumn(name = "user_image_id", referencedColumnName = "id")
+    private UserImage userImage;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
