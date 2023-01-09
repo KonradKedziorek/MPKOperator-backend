@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService<User> {
 
     @Override
     @Valid
-    public User saveUser(CreateUserRequest createUserRequest, MultipartFile multipartFile) throws IOException {
+    public User saveUser(CreateUserRequest createUserRequest) {
         log.info("Saving new user to the database");
         Set<Role> roles = roleService.getRolesByNames(createUserRequest.getRoles());
 
@@ -75,8 +75,6 @@ public class UserServiceImpl implements UserService<User> {
         RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
         user.setUsername(randomStringGenerator.generate(10));
 
-        uploadUserImage(user, multipartFile);
-
         userRepository.save(user);
         user.setUsername((createUserRequest.getName() + "_" + createUserRequest.getSurname() + "_" + user.getId()).toLowerCase(Locale.ROOT));
 
@@ -89,6 +87,43 @@ public class UserServiceImpl implements UserService<User> {
 
         return user;
     }
+
+//    @Override
+//    @Valid
+//    public User saveUser(CreateUserRequest createUserRequest, MultipartFile multipartFile) throws IOException {
+//        log.info("Saving new user to the database");
+//        Set<Role> roles = roleService.getRolesByNames(createUserRequest.getRoles());
+//
+//        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
+//                createUserRequest.getCity(),
+//                createUserRequest.getPostcode(),
+//                createUserRequest.getStreet(),
+//                createUserRequest.getLocalNumber(),
+//                createUserRequest.getHouseNumber()
+//        );
+//        User user = User.map(createUserRequest, roles);
+//
+//        String notEncodedPassword = user.getPassword();
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setAddress(address);
+//
+//        RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
+//        user.setUsername(randomStringGenerator.generate(10));
+//
+//        uploadUserImage(user, multipartFile);
+//
+//        userRepository.save(user);
+//        user.setUsername((createUserRequest.getName() + "_" + createUserRequest.getSurname() + "_" + user.getId()).toLowerCase(Locale.ROOT));
+//
+//        emailService.sendMail(emailService.prepareInfoMailAboutCreatedAccount(
+//                user.getId(),
+//                createUserRequest.getEmail(),
+//                createUserRequest.getName(),
+//                notEncodedPassword,
+//                user.getCreatedBy()));
+//
+//        return user;
+//    }
 
     @Override
     public User resetPassword(ResetPasswordRequest resetPasswordRequest) {

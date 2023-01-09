@@ -62,12 +62,17 @@ public class UserController {
         return ResponseEntity.ok(authResponse);
     }
 
+//    @PostMapping("/user/save")
+//    public ResponseEntity<User> saveUser(
+//            @Valid @RequestPart CreateUserRequest user,
+//            @RequestParam(value = "file", required = false) MultipartFile multipartFile
+//            ) throws IOException {
+//        return ResponseEntity.ok().body(userService.saveUser(user, multipartFile));
+//    }
+
     @PostMapping("/user/save")
-    public ResponseEntity<User> saveUser(
-            @Valid @RequestPart CreateUserRequest user,
-            @RequestParam(value = "file", required = false) MultipartFile multipartFile
-            ) throws IOException {
-        return ResponseEntity.ok().body(userService.saveUser(user, multipartFile));
+    public ResponseEntity<User> saveUser(@Valid @RequestBody CreateUserRequest user) {
+        return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
     @PutMapping("/user/resetPassword")
@@ -88,21 +93,6 @@ public class UserController {
             @PathVariable UUID uuid) {
         return ResponseEntity.ok().body(userService.updateUsersData(updateUserDataRequest, uuid));
     }
-
-//    @PostMapping("/users/page={page}/size={size}")
-//    public ResponseEntity<?> getUsers(
-//            @PathVariable int page,
-//            @PathVariable int size,
-//            @RequestBody Map<String, String> params) {
-//        DataResponse<User> userDataResponse = userService.getUsers(params, page, size);
-//        List<User> userList = userDataResponse.getData();
-//        return ResponseEntity.ok().body(DataResponse.<User>builder()
-//                .data(userList)
-//                .page(userDataResponse.getPage())
-//                .size(userDataResponse.getSize())
-//                .build()
-//        );
-//    }
 
     @PostMapping("/users/page={page}/size={size}")
     public ResponseEntity<?> getUsers(

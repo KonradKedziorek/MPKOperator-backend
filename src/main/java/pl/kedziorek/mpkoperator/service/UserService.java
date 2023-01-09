@@ -14,7 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface UserService<T> {
-    User saveUser(CreateUserRequest user, MultipartFile multipartFile) throws IOException;
+//    User saveUser(CreateUserRequest user, MultipartFile multipartFile) throws IOException;
+    User saveUser(CreateUserRequest user);
     Role saveRole(Role role);
     void addRoleToUser(String username, String roleName);
     User getUser(String username);
