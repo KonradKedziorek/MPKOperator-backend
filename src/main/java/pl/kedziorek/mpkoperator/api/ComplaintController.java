@@ -6,10 +6,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.domain.Comment;
 import pl.kedziorek.mpkoperator.domain.Complaint;
+import pl.kedziorek.mpkoperator.domain.ComplaintHistory;
 import pl.kedziorek.mpkoperator.domain.dto.request.CommentRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.*;
 import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
+import pl.kedziorek.mpkoperator.service.ComplaintHistoryService;
 import pl.kedziorek.mpkoperator.service.ComplaintService;
 
 import java.util.List;
@@ -24,6 +26,7 @@ import static pl.kedziorek.mpkoperator.domain.Complaint.mapToComplaintDetailsRes
 @RequiredArgsConstructor
 public class ComplaintController {
     private final ComplaintService complaintService;
+    private final ComplaintHistoryService complaintHistoryService;
 
     @PostMapping("/complaint/save")
     public ResponseEntity<?> saveComplaint(
@@ -67,6 +70,17 @@ public class ComplaintController {
                 .uuid(uuid)
                 .commentResponseList(commentResponses)
                 .build());
+    }
 
+    @GetMapping("/complaint/uuid={uuid}/status={status}")
+    public ResponseEntity<ComplaintDetailsResponse> changeStatus(@PathVariable UUID uuid, @PathVariable ComplaintStatus status) {
+        Complaint complaint = complaintService.updateComplaintStatus(status, uuid);
+        return ResponseEntity.ok().body(mapToComplaintDetailsResponse(complaint));
+    }
+
+    @GetMapping("/complaintHistories/uuid={uuid}")
+    public ResponseEntity<List<ComplaintHistoryResponse>> getComplaintHistoryList(@PathVariable UUID uuid) {
+        List<ComplaintHistory> complaintHistories = complaintHistoryService.findAllByUuidOrderByCreatedAt(uuid);
+        return ResponseEntity.ok().body(complaintHistories.stream().map(ComplaintHistory::mapToComplaintHistoryResponse).collect(Collectors.toList()));
     }
 }

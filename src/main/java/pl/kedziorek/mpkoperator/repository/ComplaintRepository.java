@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.kedziorek.mpkoperator.domain.Complaint;
+import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -22,6 +23,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
             "AND (:peselOfNotifier is null or c.peselOfNotifier LIKE %:peselOfNotifier%) " +
             "AND (:createdBy is null or c.createdBy LIKE %:createdBy%) " +
             "AND (cast(:date as date) is null or c.date = :date) " +
+            "AND (:complaintStatus is null or c.complaintStatus LIKE :complaintStatus) " +
             "ORDER BY c.createdAt DESC" +
             "")
     Page<Complaint> findAllParams(
@@ -31,6 +33,7 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
             @Param("peselOfNotifier") String peselOfNotifier,
             @Param("createdBy") String createdBy,
             @Param("date") LocalDate date,
+            @Param("complaintStatus") ComplaintStatus status,
             Pageable pageable
     );
 }

@@ -9,6 +9,7 @@ import pl.kedziorek.mpkoperator.repository.ComplaintHistoryRepository;
 import pl.kedziorek.mpkoperator.service.ComplaintHistoryService;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,5 +24,10 @@ public class ComplaintHistoryServiceImpl implements ComplaintHistoryService {
         log.info("Saving new complaint in complaint history to the database");
         ComplaintHistory complaintHistory = ComplaintHistory.createComplaintHistory(complaint, uuid);
         return complaintHistoryRepository.save(complaintHistory);
+    }
+
+    @Override
+    public List<ComplaintHistory> findAllByUuidOrderByCreatedAt(UUID uuid) {
+        return complaintHistoryRepository.findAllByUuidOrderByCreatedAtDesc(uuid);
     }
 }
