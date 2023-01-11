@@ -62,6 +62,10 @@ public class Fault {
     @OneToMany(mappedBy = "fault")
     private List<Comment> comments;
 
+    @OneToOne(cascade = CascadeType.ALL) //To do usuwania kaskadowego więc nie wiadomo czy się przyda
+    @JoinColumn(name = "bus_id", referencedColumnName = "id")
+    private Bus bus;
+
     //TODO Tu sie doda jeszcze jakis autobus 1:1
     //TODO Autobus mialby uuid swoj a w usterce bylby uuid autobusu tylko
 

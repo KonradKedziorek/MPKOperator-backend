@@ -1,20 +1,14 @@
-/**
- * 08 sty 2023 10:28:51
- */
 package pl.kedziorek.mpkoperator.domain.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.kedziorek.mpkoperator.domain.dto.response.CommentResponse;
 import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * @author cchojnowski
- */
 @Data
 @Builder
 public class ComplaintDetailsResponse {

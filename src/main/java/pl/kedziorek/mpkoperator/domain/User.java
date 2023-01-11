@@ -1,5 +1,6 @@
 package pl.kedziorek.mpkoperator.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.apache.commons.text.RandomStringGenerator;
 import org.hibernate.Hibernate;
@@ -86,6 +87,11 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "bus_id")
+    @JsonIgnore
+    private Bus bus;
 
     private Boolean isActive;
 

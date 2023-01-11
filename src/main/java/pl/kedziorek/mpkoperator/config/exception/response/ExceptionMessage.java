@@ -1,6 +1,3 @@
-/**
- * 09 sty 2023 14:23:53
- */
 package pl.kedziorek.mpkoperator.config.exception.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,9 +8,6 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-/**
- * @author cchojnowski
- */
 @SuperBuilder
 @Data
 @AllArgsConstructor
