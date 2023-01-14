@@ -130,7 +130,6 @@ public class User {
                 .build();
     }
 
-    //TODO użyć poprawić bo userów pobieram całych
     public static UserResponse responseMap(User user) {
         return UserResponse.builder()
                 .uuid(user.getUuid())

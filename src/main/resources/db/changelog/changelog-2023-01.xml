@@ -295,4 +295,36 @@
                       tableName="bus"/>
     </changeSet>
 
+    <changeSet id="add_mileage_field_in_bus_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="bus" >
+            <column name="mileage" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet  id="change_data_type_of_first_registration_date_in_bus_table" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="first_registration_date"
+                newDataType="date"
+                schemaName="public"
+                tableName="bus"/>
+    </changeSet>
+
+    <changeSet  id="change_data_type_of_insurance_expiry_date_in_bus_table" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="insurance_expiry_date"
+                newDataType="date"
+                schemaName="public"
+                tableName="bus"/>
+    </changeSet>
+
+    <changeSet  id="change_data_type_of_service_expiry_date_in_bus_table" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="service_expiry_date"
+                newDataType="date"
+                schemaName="public"
+                tableName="bus"/>
+    </changeSet>
+
 </databaseChangeLog>

@@ -5,11 +5,15 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.security.core.context.SecurityContextHolder;
+import pl.kedziorek.mpkoperator.domain.dto.request.BusRequest;
 import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -30,11 +34,13 @@ public class Bus {
 
     private Integer busNumber;
 
+    private Long mileage;
+
     private Integer manufactureYear;
 
     private String registrationNumber;
 
-    private LocalDateTime firstRegistrationDate;
+    private LocalDate firstRegistrationDate;
 
     private String brand;
 
@@ -52,9 +58,9 @@ public class Bus {
 
     private Integer numberOfStandingRoom;  // liczba miejsc stojących
 
-    private LocalDateTime insuranceExpiryDate;  // data ważności ubezpieczenia
+    private LocalDate insuranceExpiryDate;  // data ważności ubezpieczenia
 
-    private LocalDateTime serviceExpiryDate;  // data ważności przeglądu
+    private LocalDate serviceExpiryDate;  // data ważności przeglądu
 
     @Enumerated(EnumType.STRING)
     private BusStatus busStatus;
@@ -73,4 +79,28 @@ public class Bus {
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+
+    public static Bus map(BusRequest busRequest) {
+        return Bus.builder()
+                .uuid(Objects.equals(busRequest.getUuid(), "") ? UUID.randomUUID() : UUID.fromString(busRequest.getUuid()))
+                .busNumber(Integer.parseInt(busRequest.getBusNumber()))
+                .mileage(Long.parseLong(busRequest.getMileage()))
+                .manufactureYear(Integer.parseInt(busRequest.getManufactureYear()))
+                .registrationNumber(busRequest.getRegistrationNumber())
+                .firstRegistrationDate(LocalDate.parse(busRequest.getFirstRegistrationDate()))
+                .brand(busRequest.getBrand())
+                .model(busRequest.getModel())
+                .VIN(busRequest.getVIN())
+                .maximumTotalMass(Integer.parseInt(busRequest.getMaximumTotalMass()))
+                .deadWeightLoad(Integer.parseInt(busRequest.getDeadWeightLoad()))
+                .engineSize(Double.parseDouble(busRequest.getEngineSize()))
+                .numberOfSeating(Integer.parseInt(busRequest.getNumberOfSeating()))
+                .numberOfStandingRoom(Integer.parseInt(busRequest.getNumberOfStandingRoom()))
+                .insuranceExpiryDate(LocalDate.parse(busRequest.getInsuranceExpiryDate()))
+                .serviceExpiryDate(LocalDate.parse(busRequest.getServiceExpiryDate()))
+                .busStatus(BusStatus.NOT_READY_TO_DRIVE)
+                .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
 }

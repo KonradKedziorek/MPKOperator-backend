@@ -66,9 +66,6 @@ public class Fault {
     @JoinColumn(name = "bus_id", referencedColumnName = "id")
     private Bus bus;
 
-    //TODO Tu sie doda jeszcze jakis autobus 1:1
-    //TODO Autobus mialby uuid swoj a w usterce bylby uuid autobusu tylko
-
     public static Fault map(FaultRequest faultRequest) {
         return Fault.builder()
                 .uuid(UUID.randomUUID())
