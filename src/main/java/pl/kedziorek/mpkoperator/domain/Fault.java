@@ -14,7 +14,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -65,19 +67,21 @@ public class Fault {
     @JoinColumn(name = "bus_id", referencedColumnName = "id")
     private Bus bus;
 
-    public static Fault map(FaultRequest faultRequest) {
+    public static Fault map(FaultRequest faultRequest, Bus bus) {
         return Fault.builder()
-                .uuid(UUID.randomUUID())
-                .dateOfEvent(faultRequest.getDateOfEvent())
-                .date(LocalDate.now())
+                .uuid(Objects.equals(faultRequest.getUuid(), "") ? UUID.randomUUID() : UUID.fromString(faultRequest.getUuid()))
+                .dateOfEvent(LocalDateTime.of(LocalDate.parse(faultRequest.getDateOfEvent()), LocalTime.parse(faultRequest.getTimeOfEvent())))
+                .date(LocalDate.parse(faultRequest.getDateOfEvent()))
                 .placeOfEvent(faultRequest.getPlaceOfEvent())
                 .description(faultRequest.getDescription())
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
                 .faultStatus(FaultStatus.REPORTED)
+                .bus(bus)
                 .build();
     }
 
+    //TODO Tu tez poprawic trza
     public static FaultResponse responseMap(Fault fault) {
         return FaultResponse.builder()
                 .uuid(fault.getUuid())

@@ -14,6 +14,7 @@ import java.util.UUID;
 
 public interface BusRepository extends JpaRepository<Bus, Long> {
     Optional<Bus> findByUuid(UUID uuid);
+    Optional<Bus> findByBusNumber(Integer busNumber);
 
     @Query(value = "" +
             "SELECT b FROM Bus b " +

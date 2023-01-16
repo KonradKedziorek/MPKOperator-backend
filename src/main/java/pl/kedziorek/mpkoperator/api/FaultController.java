@@ -8,6 +8,7 @@ import pl.kedziorek.mpkoperator.domain.Fault;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.FaultResponse;
+import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 import pl.kedziorek.mpkoperator.service.FaultService;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class FaultController {
             @Validated
             @RequestBody
             FaultRequest fault) {
-        return ResponseEntity.ok().body(faultService.saveFault(fault));
+        return ResponseEntity.ok().body(faultService.saveOrUpdateFault(fault));
     }
 
     @GetMapping("/fault/{uuid}")
@@ -50,8 +51,8 @@ public class FaultController {
 
     }
 
-    @PutMapping("/fault/{uuid}/update")
-    public ResponseEntity<Fault> updateFault(@RequestBody Fault fault, @PathVariable UUID uuid) {
-        return ResponseEntity.ok().body(faultService.updateFault(fault, uuid));
+    @PutMapping("/fault/{uuid}/{faultStatus}")
+    public ResponseEntity<Fault> updateFault(@PathVariable FaultStatus faultStatus, @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(faultService.updateFaultStatus(faultStatus, uuid));
     }
 }

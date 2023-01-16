@@ -105,6 +105,7 @@ public class ComplaintServiceImpl implements ComplaintService<Complaint> {
     private Complaint saveComplaint(ComplaintRequest complaintRequest) {
         Complaint complaint = Complaint.map(complaintRequest);
         Complaint complaintResult = complaintRepository.save(complaint);
+
         complaintHistoryService.saveComplaintInComplaintHistory(complaintResult, complaintResult.getUuid());
         return complaintResult;
     }
