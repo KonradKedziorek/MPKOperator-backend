@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class LocalDateConverter {
 
     public static LocalDate convertToLocalDate(String localDate) {
-        if (localDate!=null) {
+        if (localDate != null) {
             return LocalDate.parse(localDate);
         } else {
             return null;

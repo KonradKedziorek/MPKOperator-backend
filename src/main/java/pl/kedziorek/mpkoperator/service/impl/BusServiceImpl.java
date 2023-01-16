@@ -2,19 +2,32 @@ package pl.kedziorek.mpkoperator.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Bus;
+import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.dto.request.BusRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
+import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
+import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 import pl.kedziorek.mpkoperator.repository.BusRepository;
 import pl.kedziorek.mpkoperator.service.BusService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static pl.kedziorek.mpkoperator.utils.IntegerConverter.convertToInteger;
+import static pl.kedziorek.mpkoperator.utils.LocalDateConverter.convertToLocalDate;
+import static pl.kedziorek.mpkoperator.utils.LongConverter.convertToLong;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +63,26 @@ public class BusServiceImpl implements BusService {
     }
 
     // TODO Bus status bedzie sie zmienialo jak bedzie fault wjezdzal na rejon
+
+    @Override
+    public DataResponse<Bus> getBuses(Map<String, String> params, int page, int size) {
+        Page<Bus> pageBus = busRepository.findAllParams(
+                convertToInteger(params.get("busNumber")),  //  == null ? "" : params.get("busNumber")
+                convertToLong(params.get("mileage")),
+                params.get("registrationNumber") == null ? "" : params.get("registrationNumber"),
+                convertToLocalDate(params.get("firstRegistrationDate")),
+                convertToLocalDate(params.get("insuranceExpiryDate")),
+                convertToLocalDate(params.get("serviceExpiryDate")),
+                params.get("busStatus") != null ? BusStatus.valueOf(params.get("busStatus")) : null,
+                PageRequest.of(page, size)
+                );
+
+        return DataResponse.<Bus>builder()
+                .data(pageBus.get().collect(Collectors.toList()))
+                .page(pageBus.getTotalPages())
+                .size(pageBus.getTotalElements())
+                .build();
+    }
 
     private Bus changePropertiesValue(BusRequest busRequest, Bus bus) {
         bus.setBusNumber(Integer.parseInt(busRequest.getBusNumber()));

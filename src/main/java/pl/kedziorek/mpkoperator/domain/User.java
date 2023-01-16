@@ -93,6 +93,7 @@ public class User {
     @JsonIgnore
     private Bus bus;
 
+    // TODO operacje na userach musza byc na aktywnych userach!!!
     private Boolean isActive;
 
 //    @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id")    to dodać jakby się coś zapętlało

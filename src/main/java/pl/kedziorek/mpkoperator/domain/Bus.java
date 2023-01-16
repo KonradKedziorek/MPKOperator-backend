@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.domain.dto.request.BusRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.BusResponse;
 import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
 
 import javax.persistence.*;
@@ -101,6 +102,19 @@ public class Bus {
                 .busStatus(BusStatus.NOT_READY_TO_DRIVE)
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static BusResponse mapBusToBusResponse(Bus bus) {
+        return BusResponse.builder()
+                .uuid(bus.getUuid())
+                .busNumber(bus.getBusNumber())
+                .mileage(bus.getMileage())
+                .registrationNumber(bus.getRegistrationNumber())
+                .firstRegistrationDate(bus.getFirstRegistrationDate())
+                .insuranceExpiryDate(bus.getInsuranceExpiryDate())
+                .serviceExpiryDate(bus.getServiceExpiryDate())
+                .busStatus(bus.getBusStatus())
                 .build();
     }
 }

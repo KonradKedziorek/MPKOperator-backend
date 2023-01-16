@@ -11,12 +11,20 @@ import java.util.UUID;
 @Builder
 public class ComplaintResponse {
     private UUID uuid;
+
     private LocalDateTime dateOfEvent;
+
     private String placeOfEvent;
+
     private String nameOfNotifier;
+
     private String surnameOfNotifier;
+
     private String peselOfNotifier;
+
     private ComplaintStatus complaintStatus;
+
     public String contactToNotifier;
+
     public String description;
 }
