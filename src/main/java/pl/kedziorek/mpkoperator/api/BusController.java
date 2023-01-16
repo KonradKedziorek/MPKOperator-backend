@@ -5,15 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.domain.Bus;
-import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.dto.request.BusRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.BusResponse;
-import pl.kedziorek.mpkoperator.domain.dto.response.ComplaintResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
+import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
 import pl.kedziorek.mpkoperator.service.BusService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,5 +43,10 @@ public class BusController {
                 .size(busDataResponse.getSize())
                 .build()
         );
+    }
+
+    @PutMapping("/bus/{uuid}/{busStatus}")
+    public ResponseEntity<Bus> updateBusStatus(@PathVariable BusStatus busStatus, @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(busService.updateBusStatus(busStatus, uuid));
     }
 }

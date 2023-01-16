@@ -62,6 +62,20 @@ public class BusServiceImpl implements BusService {
         return busRepository.save(busRef);
     }
 
+    @Override
+    public Bus updateBusStatus(BusStatus busStatus, UUID uuid) {
+        Bus updatedBus = busRepository.findByUuid(uuid).orElseThrow(() ->
+                new ResourceNotFoundException("Bus not found in the database"));
+
+        log.info("Updating bus with uuid: {} to the database", updatedBus.getUuid());
+
+        updatedBus.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        updatedBus.setModifiedAt(LocalDateTime.now());
+        updatedBus.setBusStatus(busStatus);
+
+        return busRepository.save(updatedBus);
+    }
+
     // TODO Bus status bedzie sie zmienialo jak bedzie fault wjezdzal na rejon
 
     @Override
