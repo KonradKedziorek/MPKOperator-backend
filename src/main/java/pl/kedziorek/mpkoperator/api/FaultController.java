@@ -48,7 +48,6 @@ public class FaultController {
                 .size(faultDataResponse.getSize())
                 .build()
         );
-
     }
 
     @PutMapping("/fault/{uuid}/{faultStatus}")

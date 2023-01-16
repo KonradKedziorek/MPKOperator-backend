@@ -81,7 +81,6 @@ public class Fault {
                 .build();
     }
 
-    //TODO Tu tez poprawic trza
     public static FaultResponse responseMap(Fault fault) {
         return FaultResponse.builder()
                 .uuid(fault.getUuid())
@@ -90,8 +89,7 @@ public class Fault {
                 .description(fault.getDescription())
                 .createdBy(fault.getCreatedBy())
                 .createdAt(fault.getCreatedAt())
-                .modifiedBy(fault.getModifiedBy())
-                .modifiedAt(fault.getModifiedAt())
+                .busNumber(fault.bus.getBusNumber())
                 .faultStatus(fault.getFaultStatus())
                 .build();
     }

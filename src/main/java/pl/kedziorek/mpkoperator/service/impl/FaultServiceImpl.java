@@ -14,6 +14,7 @@ import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.BusResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
+import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 import pl.kedziorek.mpkoperator.repository.BusRepository;
 import pl.kedziorek.mpkoperator.repository.FaultRepository;
@@ -29,6 +30,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static pl.kedziorek.mpkoperator.utils.IntegerConverter.convertToInteger;
 import static pl.kedziorek.mpkoperator.utils.LocalDateConverter.convertToLocalDate;
 
 @Service
@@ -62,6 +64,8 @@ public class FaultServiceImpl implements FaultService<Fault> {
         Bus bus = busRepository.findByBusNumber(Integer.parseInt(faultRequest.getBusNumber())).orElseThrow(() ->
                 new ResourceNotFoundException("Bus with that number does not exist!"));
 
+        //TODO Zmiana statusu busa od razu es!!!
+
         Fault fault = Fault.map(faultRequest, bus);
         Fault faultResult = faultRepository.save(fault);
 
@@ -80,6 +84,8 @@ public class FaultServiceImpl implements FaultService<Fault> {
         updatedFault.setModifiedAt(LocalDateTime.now());
         updatedFault.setFaultStatus(faultStatus);
 
+        //TODO (if fault status jest ze zakonczone to zmienic status busa a co)!!!!
+
         faultHistoryService.saveComplaintInFaultHistory(updatedFault, updatedFault.getUuid());
 
         return faultRepository.save(updatedFault);
@@ -94,10 +100,12 @@ public class FaultServiceImpl implements FaultService<Fault> {
     @Override
     public DataResponse<Fault> getFaults(Map<String, String> params, int page, int size) {
         Page<Fault> pageFault = faultRepository.findAllParams(
-                params.get("placeOfEvent").toUpperCase(),
-                params.get("description").toUpperCase(),
-                params.get("createdBy").toUpperCase(),
+                params.get("placeOfEvent") == null ? "" : params.get("placeOfEvent"),
+                params.get("description") == null ? "" : params.get("description"),
+                params.get("createdBy") == null ? "" : params.get("createdBy"),
+                convertToInteger(params.get("busNumber")),
                 convertToLocalDate(params.get("date")),
+                params.get("faultStatus") != null ? FaultStatus.valueOf(params.get("faultStatus")) : null,
                 PageRequest.of(page, size)
         );
 

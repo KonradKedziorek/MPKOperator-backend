@@ -11,12 +11,18 @@ import java.util.UUID;
 @Builder
 public class FaultResponse {
     private UUID uuid;
+
     private LocalDateTime dateOfEvent;
+
     private String placeOfEvent;
+
     private String description;
+
     private String createdBy;
+
     private LocalDateTime createdAt;
-    private String modifiedBy;
-    private LocalDateTime modifiedAt;
+
+    private Integer busNumber;
+
     private FaultStatus faultStatus;
 }
