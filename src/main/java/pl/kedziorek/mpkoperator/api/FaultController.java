@@ -41,7 +41,7 @@ public class FaultController {
         return ResponseEntity.ok().body(faultService.findByUuid(uuid));
     }
 
-    @PostMapping("/fault/page={page}/size={size}")
+    @PostMapping("/faults/page={page}/size={size}")
     public ResponseEntity<?> getFaults(
             @PathVariable int page,
             @PathVariable int size,
