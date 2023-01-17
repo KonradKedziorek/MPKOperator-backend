@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.domain.Bus;
 import pl.kedziorek.mpkoperator.domain.dto.request.BusRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.BusDetailsResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.BusResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static pl.kedziorek.mpkoperator.domain.Bus.mapToBusDetailsResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -28,6 +31,12 @@ public class BusController {
             @RequestBody
                     BusRequest bus) {
         return ResponseEntity.ok().body(busService.saveOrUpdateBus(bus));
+    }
+
+    @GetMapping("/bus/uuid={uuid}")
+    public ResponseEntity<BusDetailsResponse> getBus(@PathVariable UUID uuid) {
+        Bus bus = busService.findByUuid(uuid);
+        return ResponseEntity.ok().body(mapToBusDetailsResponse(bus));
     }
 
     @PostMapping("/bus/page={page}/size={size}")
@@ -48,5 +57,11 @@ public class BusController {
     @PutMapping("/bus/{uuid}/{busStatus}")
     public ResponseEntity<Bus> updateBusStatus(@PathVariable BusStatus busStatus, @PathVariable UUID uuid) {
         return ResponseEntity.ok().body(busService.updateBusStatus(busStatus, uuid));
+    }
+
+    @GetMapping("/bus/uuid={uuid}/status={status}")
+    public ResponseEntity<BusDetailsResponse> changeStatus(@PathVariable UUID uuid, @PathVariable BusStatus status) {
+        Bus bus = busService.updateBusStatus(status, uuid);
+        return ResponseEntity.ok().body(mapToBusDetailsResponse(bus));
     }
 }

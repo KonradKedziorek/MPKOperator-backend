@@ -15,6 +15,7 @@ import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhon
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
 import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.UserBusResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.UserResponse;
 
 import javax.persistence.*;
@@ -144,4 +145,14 @@ public class User {
                 .isActive(user.getIsActive())
                 .build();
     }
+
+    public static UserBusResponse mapToUserResponse(User user) {
+        return UserBusResponse.builder()
+                .name(user.getName())
+                .surname(user.getSurname())
+                .phoneNumber(user.getPhoneNumber())
+                .build();
+    }
 }
+
+//TODO naprawic usera - getting itp

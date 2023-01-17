@@ -7,6 +7,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.CommentResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.FaultDetailsResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.FaultResponse;
 import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 
@@ -18,6 +20,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -91,6 +94,24 @@ public class Fault {
                 .createdAt(fault.getCreatedAt())
                 .busNumber(fault.bus.getBusNumber())
                 .faultStatus(fault.getFaultStatus())
+                .build();
+    }
+
+    public static FaultDetailsResponse mapToFaultDetailsResponse(Fault fault) {
+        List<CommentResponse> commentResponseList = fault.getComments().stream().map(Comment::mapToCommentResponse).collect(Collectors.toList());
+        return FaultDetailsResponse.builder()
+                .uuid(fault.getUuid())
+                .dateOfEvent(fault.getDateOfEvent())
+                .date(fault.getDate())
+                .placeOfEvent(fault.getPlaceOfEvent())
+                .description(fault.getDescription())
+                .createdBy(fault.getCreatedBy())
+                .createdAt(fault.getCreatedAt())
+                .modifiedBy(fault.getModifiedBy())
+                .modifiedAt(fault.getModifiedAt())
+                .faultStatus(fault.getFaultStatus())
+                .comments(commentResponseList)
+                .busNumber(fault.getBus().getBusNumber())
                 .build();
     }
 }

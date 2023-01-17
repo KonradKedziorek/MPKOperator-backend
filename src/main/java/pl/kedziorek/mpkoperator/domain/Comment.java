@@ -65,7 +65,7 @@ public class Comment {
         return getClass().hashCode();
     }
 
-    public static CommentResponse mapToCommentResponse(Comment comment){
+    public static CommentResponse mapToCommentResponse(Comment comment) {
         return CommentResponse.builder()
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())

@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
+import pl.kedziorek.mpkoperator.domain.dto.response.FaultHistoryResponse;
 import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 
 import javax.persistence.*;
@@ -91,6 +92,14 @@ public class FaultHistory {
                 .bus(fault.getBus())
                 .createdAtOriginalFault(fault.getCreatedAt())
                 .createdByOriginalFault(fault.getCreatedBy())
+                .build();
+    }
+
+    public static FaultHistoryResponse mapToFaultHistoryResponse(FaultHistory faultHistory) {
+        return FaultHistoryResponse.builder()
+                .status(faultHistory.getFaultStatus())
+                .modifiedAt(faultHistory.getModifiedAt())
+                .modifiedBy(faultHistory.getModifiedBy())
                 .build();
     }
 }

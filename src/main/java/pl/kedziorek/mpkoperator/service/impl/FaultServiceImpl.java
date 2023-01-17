@@ -8,12 +8,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Bus;
+import pl.kedziorek.mpkoperator.domain.Comment;
 import pl.kedziorek.mpkoperator.domain.Fault;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
 import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 import pl.kedziorek.mpkoperator.repository.BusRepository;
+import pl.kedziorek.mpkoperator.repository.CommentRepository;
 import pl.kedziorek.mpkoperator.repository.FaultRepository;
 import pl.kedziorek.mpkoperator.service.BusService;
 import pl.kedziorek.mpkoperator.service.FaultHistoryService;
@@ -23,6 +25,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -40,6 +43,7 @@ public class FaultServiceImpl implements FaultService<Fault> {
     private final BusRepository busRepository;
     private final FaultHistoryService faultHistoryService;
     private final BusService busService;
+    private final CommentRepository commentRepository;
 
     @Override
     public Fault findByUuid(UUID uuid) {
@@ -99,6 +103,21 @@ public class FaultServiceImpl implements FaultService<Fault> {
         faultHistoryService.saveFaultInFaultHistory(updatedFault, updatedFault.getUuid());
 
         return faultRepository.save(updatedFault);
+    }
+
+    @Override
+    public List<Comment> createComment(UUID uuid, String content) {
+        Fault fault = findByUuid(uuid);
+        Comment comment = Comment.builder()
+                .content(content)
+                .fault(fault)
+                .createdAt(LocalDateTime.now())
+                .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
+                .build();
+        Comment newComment =  commentRepository.save(comment);
+        List<Comment> comments = fault.getComments();
+        comments.add(newComment);
+        return comments;
     }
 
     private Fault editFault(FaultRequest faultRequest) {

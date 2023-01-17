@@ -108,7 +108,7 @@ public class Complaint {
                 .build();
     }
 
-    public static ComplaintDetailsResponse mapToComplaintDetailsResponse(Complaint complaint){
+    public static ComplaintDetailsResponse mapToComplaintDetailsResponse(Complaint complaint) {
         List<CommentResponse> commentResponseList = complaint.getComments().stream().map(Comment::mapToCommentResponse).collect(Collectors.toList());
         return ComplaintDetailsResponse.builder()
                 .uuid(complaint.getUuid())

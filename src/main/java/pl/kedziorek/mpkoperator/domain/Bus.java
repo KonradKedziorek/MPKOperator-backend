@@ -7,7 +7,10 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.domain.dto.request.BusRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.BusDetailsResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.BusResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.CommentResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.UserBusResponse;
 import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
 
 import javax.persistence.*;
@@ -16,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -116,6 +120,34 @@ public class Bus {
                 .insuranceExpiryDate(bus.getInsuranceExpiryDate())
                 .serviceExpiryDate(bus.getServiceExpiryDate())
                 .busStatus(bus.getBusStatus())
+                .build();
+    }
+
+    public static BusDetailsResponse mapToBusDetailsResponse(Bus bus) {
+        List<UserBusResponse> usersResponseList = bus.getUsers().stream().map(User::mapToUserResponse).collect(Collectors.toList());
+        return BusDetailsResponse.builder()
+                .uuid(bus.getUuid())
+                .busNumber(bus.getBusNumber())
+                .mileage(bus.getMileage())
+                .manufactureYear(bus.getManufactureYear())
+                .registrationNumber(bus.getRegistrationNumber())
+                .firstRegistrationDate(bus.getFirstRegistrationDate())
+                .brand(bus.getBrand())
+                .model(bus.getModel())
+                .VIN(bus.getVIN())
+                .maximumTotalMass(bus.getMaximumTotalMass())
+                .deadWeightLoad(bus.getDeadWeightLoad())
+                .engineSize(bus.getEngineSize())
+                .numberOfSeating(bus.getNumberOfSeating())
+                .numberOfStandingRoom(bus.getNumberOfStandingRoom())
+                .insuranceExpiryDate(bus.getInsuranceExpiryDate())
+                .serviceExpiryDate(bus.getServiceExpiryDate())
+                .busStatus(bus.getBusStatus())
+                .users(usersResponseList)
+                .createdBy(bus.getCreatedBy())
+                .createdAt(bus.getCreatedAt())
+                .modifiedBy(bus.getModifiedBy())
+                .modifiedAt(bus.getModifiedAt())
                 .build();
     }
 }

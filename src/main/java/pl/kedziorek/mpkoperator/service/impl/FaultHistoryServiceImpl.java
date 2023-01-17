@@ -9,6 +9,7 @@ import pl.kedziorek.mpkoperator.repository.FaultHistoryRepository;
 import pl.kedziorek.mpkoperator.service.FaultHistoryService;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,5 +24,10 @@ public class FaultHistoryServiceImpl implements FaultHistoryService {
         log.info("Saving new fault in fault history to the database");
         FaultHistory faultHistory = FaultHistory.createFaultHistory(fault, uuid);
         return faultHistoryRepository.save(faultHistory);
+    }
+
+    @Override
+    public List<FaultHistory> findAllByUuidOrderByCreatedAt(UUID uuid) {
+        return faultHistoryRepository.findAllByUuidOrderByCreatedAtDesc(uuid);
     }
 }
