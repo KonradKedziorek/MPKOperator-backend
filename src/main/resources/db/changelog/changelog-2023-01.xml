@@ -207,6 +207,7 @@
             </column>
         </addColumn>
     </changeSet>
+
     <changeSet id="changing_column_bus_number_name" author="Konrad Kedziorek">
         <renameColumn columnDataType="int"
                        newColumnName="bus_number"
@@ -325,6 +326,14 @@
                 newDataType="date"
                 schemaName="public"
                 tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="add_bus_id_column_to_fault_history_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="fault_history" >
+            <column name="bus_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

@@ -6,5 +6,5 @@ import pl.kedziorek.mpkoperator.domain.FaultHistory;
 import java.util.UUID;
 
 public interface FaultHistoryService {
-    FaultHistory saveComplaintInFaultHistory(Fault fault, UUID uuid);
+    FaultHistory saveFaultInFaultHistory(Fault fault, UUID uuid);
 }

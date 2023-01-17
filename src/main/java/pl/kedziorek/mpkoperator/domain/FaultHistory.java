@@ -55,6 +55,10 @@ public class FaultHistory {
     @Enumerated(EnumType.STRING)
     private FaultStatus faultStatus;
 
+    @OneToOne //To do usuwania kaskadowego więc nie wiadomo czy się przyda
+    @JoinColumn(name = "bus_id", referencedColumnName = "id")
+    private Bus bus;
+
     private String createdByOriginalFault;
 
     private LocalDateTime createdAtOriginalFault;
@@ -84,6 +88,7 @@ public class FaultHistory {
                 .modifiedBy(fault.getModifiedBy())
                 .modifiedAt(fault.getModifiedAt())
                 .faultStatus(fault.getFaultStatus())
+                .bus(fault.getBus())
                 .createdAtOriginalFault(fault.getCreatedAt())
                 .createdByOriginalFault(fault.getCreatedBy())
                 .build();

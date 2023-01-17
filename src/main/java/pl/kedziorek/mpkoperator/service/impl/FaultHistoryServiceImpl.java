@@ -19,8 +19,8 @@ public class FaultHistoryServiceImpl implements FaultHistoryService {
     private final FaultHistoryRepository faultHistoryRepository;
 
     @Override
-    public FaultHistory saveComplaintInFaultHistory(Fault fault, UUID uuid) {
-        log.info("Saving new fault in complaint history to the database");
+    public FaultHistory saveFaultInFaultHistory(Fault fault, UUID uuid) {
+        log.info("Saving new fault in fault history to the database");
         FaultHistory faultHistory = FaultHistory.createFaultHistory(fault, uuid);
         return faultHistoryRepository.save(faultHistory);
     }

@@ -8,16 +8,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Bus;
-import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.Fault;
-import pl.kedziorek.mpkoperator.domain.dto.request.ComplaintRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.FaultRequest;
-import pl.kedziorek.mpkoperator.domain.dto.response.BusResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
-import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
+import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
 import pl.kedziorek.mpkoperator.domain.enums.FaultStatus;
 import pl.kedziorek.mpkoperator.repository.BusRepository;
 import pl.kedziorek.mpkoperator.repository.FaultRepository;
+import pl.kedziorek.mpkoperator.service.BusService;
 import pl.kedziorek.mpkoperator.service.FaultHistoryService;
 import pl.kedziorek.mpkoperator.service.FaultService;
 
@@ -41,6 +39,7 @@ public class FaultServiceImpl implements FaultService<Fault> {
     private final FaultRepository faultRepository;
     private final BusRepository busRepository;
     private final FaultHistoryService faultHistoryService;
+    private final BusService busService;
 
     @Override
     public Fault findByUuid(UUID uuid) {
@@ -64,12 +63,14 @@ public class FaultServiceImpl implements FaultService<Fault> {
         Bus bus = busRepository.findByBusNumber(Integer.parseInt(faultRequest.getBusNumber())).orElseThrow(() ->
                 new ResourceNotFoundException("Bus with that number does not exist!"));
 
-        //TODO Zmiana statusu busa od razu es!!!
-
         Fault fault = Fault.map(faultRequest, bus);
         Fault faultResult = faultRepository.save(fault);
 
-        faultHistoryService.saveComplaintInFaultHistory(faultResult, faultResult.getUuid());
+        //setting appropriate bus status after reporting fault
+        busService.updateBusStatus(BusStatus.REPORTED_TO_REPAIR, bus.getUuid());
+        log.info("Updating bus status. New status -> {}" , bus.getBusStatus());
+
+        faultHistoryService.saveFaultInFaultHistory(faultResult, faultResult.getUuid());
         return faultResult;
     }
 
@@ -78,15 +79,24 @@ public class FaultServiceImpl implements FaultService<Fault> {
         Fault updatedFault = faultRepository.findByUuid(uuid).orElseThrow(() ->
                 new ResourceNotFoundException("Fault not found in the database"));
 
+        Bus bus = busRepository.findByBusNumber(updatedFault.getBus().getBusNumber()).orElseThrow(() ->
+                new ResourceNotFoundException("Bus with that number does not exist!"));
+
         log.info("Updating fault with uuid: {} to the database", updatedFault.getUuid());
 
         updatedFault.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
         updatedFault.setModifiedAt(LocalDateTime.now());
         updatedFault.setFaultStatus(faultStatus);
 
-        //TODO (if fault status jest ze zakonczone to zmienic status busa a co)!!!!
+        if(updatedFault.getFaultStatus() == FaultStatus.FINISHED) {
+            busService.updateBusStatus(BusStatus.READY_TO_DRIVE, bus.getUuid());
+            log.info("Updating bus status. New status -> {}" , bus.getBusStatus());
+        } else if (updatedFault.getFaultStatus() == FaultStatus.CHECKING) {
+            busService.updateBusStatus(BusStatus.UNDER_REPAIR, bus.getUuid());
+            log.info("Updating bus status. New status -> {}" , bus.getBusStatus());
+        }
 
-        faultHistoryService.saveComplaintInFaultHistory(updatedFault, updatedFault.getUuid());
+        faultHistoryService.saveFaultInFaultHistory(updatedFault, updatedFault.getUuid());
 
         return faultRepository.save(updatedFault);
     }
