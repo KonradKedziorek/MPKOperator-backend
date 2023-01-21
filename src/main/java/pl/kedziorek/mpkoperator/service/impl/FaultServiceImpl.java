@@ -146,7 +146,7 @@ public class FaultServiceImpl implements FaultService<Fault> {
     }
 
     private Fault changePropertiesValue(FaultRequest faultRequest, Fault fault) {
-        fault.setDateOfEvent(LocalDateTime.of(LocalDate.parse(faultRequest.getDateOfEvent()), LocalTime.now()));
+        fault.setDateOfEvent(LocalDateTime.of(LocalDate.parse(faultRequest.getDateOfEvent()), LocalTime.parse(faultRequest.getTimeOfEvent())));
         fault.setPlaceOfEvent(faultRequest.getPlaceOfEvent());
         fault.setDescription(faultRequest.getDescription());
         fault.setModifiedAt(LocalDateTime.now());

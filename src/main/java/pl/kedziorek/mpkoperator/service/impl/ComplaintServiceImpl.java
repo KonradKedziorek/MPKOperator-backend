@@ -117,7 +117,7 @@ public class ComplaintServiceImpl implements ComplaintService<Complaint> {
     }
 
     private Complaint changePropertiesValue(ComplaintRequest complaintRequest, Complaint complaint) {
-        complaint.setDateOfEvent(LocalDateTime.of(LocalDate.parse(complaintRequest.getDateOfEvent()), LocalTime.now()));
+        complaint.setDateOfEvent(LocalDateTime.of(LocalDate.parse(complaintRequest.getDateOfEvent()), LocalTime.parse(complaintRequest.getTimeOfEvent())));
         complaint.setContactToNotifier(complaintRequest.getContactToNotifier());
         complaint.setDescription(complaintRequest.getDescription());
         complaint.setNameOfNotifier(complaintRequest.getNameOfNotifier());
