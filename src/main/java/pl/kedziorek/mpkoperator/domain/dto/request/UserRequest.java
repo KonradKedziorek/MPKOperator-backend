@@ -17,7 +17,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserRequest {
+public class UserRequest {
+    private String uuid;
+
     @NotBlank(message = "Name is mandatory")
     private String name;
 
@@ -51,6 +53,8 @@ public class CreateUserRequest {
 
     @NotBlank(message = "House Number is mandatory")
     private String houseNumber;
+
+    private Boolean isActive;
 
     private Set<String> roles = new HashSet<>();
 }

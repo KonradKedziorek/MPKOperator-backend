@@ -12,14 +12,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.kedziorek.mpkoperator.config.exception.BadRequestException;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
-import pl.kedziorek.mpkoperator.domain.Address;
-import pl.kedziorek.mpkoperator.domain.Role;
-import pl.kedziorek.mpkoperator.domain.User;
-import pl.kedziorek.mpkoperator.domain.UserImage;
-import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUserDataRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
+import pl.kedziorek.mpkoperator.domain.*;
+import pl.kedziorek.mpkoperator.domain.dto.request.*;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.repository.UserImageRepository;
@@ -31,13 +25,9 @@ import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,20 +43,30 @@ public class UserServiceImpl implements UserService<User> {
     private final AddressService addressService;
     private final UserImageRepository userImageRepository;
 
+//    @Override
+//    public User saveOrUpdateUser(UserRequest userRequest) {
+//        log.info("Saving new user to the database");
+//        //if uuid is null should create new object
+//        if (Objects.equals(userRequest.getUuid(), "")) {
+//            return saveUser(userRequest);
+//        }//else update existing object
+//        return editUser(userRequest);
+//    }
+
     @Override
     @Valid
-    public User saveUser(CreateUserRequest createUserRequest) {
+    public User saveUser(UserRequest userRequest) {
         log.info("Saving new user to the database");
-        Set<Role> roles = roleService.getRolesByNames(createUserRequest.getRoles());
+        Set<Role> roles = roleService.getRolesByNames(userRequest.getRoles());
 
         Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
-                createUserRequest.getCity(),
-                createUserRequest.getPostcode(),
-                createUserRequest.getStreet(),
-                createUserRequest.getLocalNumber(),
-                createUserRequest.getHouseNumber()
+                userRequest.getCity(),
+                userRequest.getPostcode(),
+                userRequest.getStreet(),
+                userRequest.getLocalNumber(),
+                userRequest.getHouseNumber()
         );
-        User user = User.map(createUserRequest, roles);
+        User user = User.map(userRequest, roles);
 
         String notEncodedPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -76,12 +76,12 @@ public class UserServiceImpl implements UserService<User> {
         user.setUsername(randomStringGenerator.generate(10));
 
         userRepository.save(user);
-        user.setUsername((createUserRequest.getName() + "_" + createUserRequest.getSurname() + "_" + user.getId()).toLowerCase(Locale.ROOT));
+        user.setUsername((userRequest.getName() + "_" + userRequest.getSurname() + "_" + user.getId()).toLowerCase(Locale.ROOT));
 
         emailService.sendMail(emailService.prepareInfoMailAboutCreatedAccount(
                 user.getId(),
-                createUserRequest.getEmail(),
-                createUserRequest.getName(),
+                userRequest.getEmail(),
+                userRequest.getName(),
                 notEncodedPassword,
                 user.getCreatedBy()));
 
@@ -202,12 +202,12 @@ public class UserServiceImpl implements UserService<User> {
     @Override
     public DataResponse<User> getUsers(Map<String, String> params, int page, int size) {
         Page<User> pageUser = userRepository.findAllParams(
-                params.get("name").toUpperCase(),
-                params.get("surname").toUpperCase(),
-                params.get("username").toUpperCase(),
-                params.get("email").toUpperCase(),
-                params.get("pesel").toUpperCase(),
-                params.get("phoneNumber").toUpperCase(),
+                params.get("name") == null ? "" : params.get("name"),
+                params.get("surname") == null ? "" : params.get("surname"),
+                params.get("username") == null ? "" : params.get("username"),
+                params.get("email") == null ? "" : params.get("email"),
+                params.get("pesel") == null ? "" : params.get("pesel"),
+                params.get("phoneNumber") == null ? "" : params.get("phoneNumber"),
                 PageRequest.of(page, size)
         );
 
@@ -237,17 +237,55 @@ public class UserServiceImpl implements UserService<User> {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
     }
 
-    public void uploadUserImage(User user, MultipartFile multipartFile) throws IOException {
-        if (multipartFile.getOriginalFilename() != null
-                && !StringUtils.cleanPath(multipartFile.getOriginalFilename()).contains("..")) {
-            UserImage userImage = new UserImage();
-            userImage.setBytes(multipartFile.getBytes());
-            userImage.setName(multipartFile.getOriginalFilename());
-            userImage.setUuid(UUID.randomUUID());
 
-            user.setUserImage(userImage);
-            userRepository.save(user);
-            userImageRepository.save(userImage);
-        }
+
+//    public void uploadUserImage(User user, MultipartFile multipartFile) throws IOException {
+//        if (multipartFile.getOriginalFilename() != null
+//                && !StringUtils.cleanPath(multipartFile.getOriginalFilename()).contains("..")) {
+//            UserImage userImage = new UserImage();
+//            userImage.setBytes(multipartFile.getBytes());
+//            userImage.setName(multipartFile.getOriginalFilename());
+//            userImage.setUuid(UUID.randomUUID());
+//
+//            user.setUserImage(userImage);
+//            userRepository.save(user);
+//            userImageRepository.save(userImage);
+//        }
+//    }
+
+    @Override
+    public User findByUuid(UUID uuid) {
+        return userRepository.findByUuid(uuid).orElseThrow(() ->
+                new ResourceNotFoundException("User not found in database"));
     }
+
+//    private User editUser(UserRequest userRequest) {
+//        User user = findByUuid(UUID.fromString(userRequest.getUuid()));
+//        var userRef = changePropertiesValue(userRequest, user);
+//        return userRepository.save(userRef);
+//    }
+
+//    private User changePropertiesValue(UserRequest userRequest, User user) {
+//        Set<Role> roles = roleService.getRolesByNames(userRequest.getRoles());
+//
+//        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
+//                userRequest.getCity(),
+//                userRequest.getPostcode(),
+//                userRequest.getStreet(),
+//                userRequest.getLocalNumber(),
+//                userRequest.getHouseNumber()
+//        );
+//
+//        user.setName(userRequest.getName());
+//        user.setSurname(userRequest.getSurname());
+//        user.setEmail(userRequest.getEmail());
+//        user.setPesel(userRequest.getPesel());
+//        user.setPhoneNumber(userRequest.getPhoneNumber());
+//        user.setAddress(address);
+//        user.setRoles(roles);
+//        user.setIsActive(userRequest.getIsActive());
+//        user.setModifiedAt(LocalDateTime.now());
+//        user.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+//        return user;
+//    }
 }

@@ -14,8 +14,10 @@ import pl.kedziorek.mpkoperator.config.validator.peselValidator.UniquePesel;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
-import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.response.AddressResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.UserBusResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.UserDetailsResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.UserResponse;
 
 import javax.persistence.*;
@@ -115,16 +117,16 @@ public class User {
         return getClass().hashCode();
     }
 
-    public static User map(CreateUserRequest createUserRequest, Set<Role> roles) {
+    public static User map(UserRequest userRequest, Set<Role> roles) {
         RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
         return User.builder()
                 .uuid(UUID.randomUUID())
-                .name(createUserRequest.getName())
-                .surname(createUserRequest.getSurname())
-                .email(createUserRequest.getEmail())
+                .name(userRequest.getName())
+                .surname(userRequest.getSurname())
+                .email(userRequest.getEmail())
                 .password(randomStringGenerator.generate(9))
-                .pesel(createUserRequest.getPesel())
-                .phoneNumber(createUserRequest.getPhoneNumber())
+                .pesel(userRequest.getPesel())
+                .phoneNumber(userRequest.getPhoneNumber())
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
                 .roles(roles)
@@ -141,18 +143,37 @@ public class User {
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .roles(user.getRoles())
-                .address(user.getAddress())
                 .isActive(user.getIsActive())
                 .build();
     }
 
-    public static UserBusResponse mapToUserResponse(User user) {
+    public static UserBusResponse mapToUserBusResponse(User user) {
         return UserBusResponse.builder()
                 .name(user.getName())
                 .surname(user.getSurname())
                 .phoneNumber(user.getPhoneNumber())
                 .build();
     }
-}
 
-//TODO naprawic usera - getting itp
+    public static UserDetailsResponse mapToUserDetailsResponse(User user){
+        return UserDetailsResponse.builder()
+                .uuid(user.getUuid())
+                .name(user.getName())
+                .surname(user.getSurname())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .createdBy(user.getCreatedBy())
+                .createdAt(user.getCreatedAt())
+                .modifiedBy(user.getModifiedBy())
+                .modifiedAt(user.getModifiedAt())
+                .roles(user.getRoles())
+                .address(AddressResponse.builder()
+                        .city(user.getAddress().getCity())
+                        .postcode(user.getAddress().getPostcode())
+                        .street(user.getAddress().getStreet())
+                        .localNumber(user.getAddress().getLocalNumber())
+                        .houseNumber(user.getAddress().getHouseNumber())
+                        .build())
+                .build();
+    }
+}

@@ -21,12 +21,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "" +
             "SELECT u FROM User u " +
-            "WHERE (:name is null or upper(u.name) LIKE %:name%) " +
-            "AND (:surname is null or upper(u.surname) LIKE %:surname%) " +
-            "AND (:username is null or upper(u.username) LIKE %:username%) " +
-            "AND (:email is null or upper(u.email) LIKE %:email%) " +
-            "AND (:pesel is null or upper(u.pesel) LIKE %:pesel%) " +
-            "AND (:phoneNumber is null or upper(u.phoneNumber) LIKE %:phoneNumber%) " +
+            "WHERE (:name is null or u.name LIKE %:name%) " +
+            "AND (:surname is null or u.surname LIKE %:surname%) " +
+            "AND (:username is null or u.username LIKE %:username%) " +
+            "AND (:email is null or u.email LIKE %:email%) " +
+            "AND (:pesel is null or u.pesel LIKE %:pesel%) " +
+            "AND (:phoneNumber is null or u.phoneNumber LIKE %:phoneNumber%) " +
             "ORDER BY u.createdAt DESC" +
             "")
     Page<User> findAllParams(

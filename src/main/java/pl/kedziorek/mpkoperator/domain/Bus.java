@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import pl.kedziorek.mpkoperator.domain.dto.request.BusRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.BusDetailsResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.BusResponse;
-import pl.kedziorek.mpkoperator.domain.dto.response.CommentResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.UserBusResponse;
 import pl.kedziorek.mpkoperator.domain.enums.BusStatus;
 
@@ -124,7 +123,7 @@ public class Bus {
     }
 
     public static BusDetailsResponse mapToBusDetailsResponse(Bus bus) {
-        List<UserBusResponse> usersResponseList = bus.getUsers().stream().map(User::mapToUserResponse).collect(Collectors.toList());
+        List<UserBusResponse> usersResponseList = bus.getUsers().stream().map(User::mapToUserBusResponse).collect(Collectors.toList());
         return BusDetailsResponse.builder()
                 .uuid(bus.getUuid())
                 .busNumber(bus.getBusNumber())

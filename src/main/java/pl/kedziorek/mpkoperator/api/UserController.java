@@ -16,9 +16,9 @@ import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
 import pl.kedziorek.mpkoperator.domain.dto.Credentials;
 import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
-import pl.kedziorek.mpkoperator.domain.dto.request.CreateUserRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUserDataRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
 import pl.kedziorek.mpkoperator.domain.dto.response.AuthResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
@@ -69,8 +69,9 @@ public class UserController {
 //        return ResponseEntity.ok().body(userService.saveUser(user, multipartFile));
 //    }
 
+ // TODO Nie wiem czy tu nie powinno byc put dla update bo nie przechodzi przez unique walidacje - spytac czarka
     @PostMapping("/user/save")
-    public ResponseEntity<User> saveUser(@Valid @RequestBody CreateUserRequest user) {
+    public ResponseEntity<?> saveUser(@Valid @RequestBody UserRequest user) {
         return ResponseEntity.ok().body(userService.saveUser(user));
     }
 

@@ -4,12 +4,13 @@ import lombok.Builder;
 import lombok.Data;
 import pl.kedziorek.mpkoperator.domain.Role;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Builder
-public class UserResponse {
+public class UserDetailsResponse {
     private UUID uuid;
 
     private String name;
@@ -22,7 +23,15 @@ public class UserResponse {
 
     private String phoneNumber;
 
+    private String createdBy;
+
+    private LocalDateTime createdAt;
+
+    private String modifiedBy;
+
+    private LocalDateTime modifiedAt;
+
     private Set<Role> roles;
 
-    private Boolean isActive;
+    private AddressResponse address;
 }
