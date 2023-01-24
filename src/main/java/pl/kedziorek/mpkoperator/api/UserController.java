@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.config.JwtUtils;
@@ -16,15 +17,13 @@ import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
 import pl.kedziorek.mpkoperator.domain.dto.Credentials;
 import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
-import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUserDataRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.*;
 import pl.kedziorek.mpkoperator.domain.dto.response.AuthResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.LoggedInResponse;
 import pl.kedziorek.mpkoperator.domain.dto.response.UserResponse;
 import pl.kedziorek.mpkoperator.service.AuthService;
+import pl.kedziorek.mpkoperator.service.EmailService;
 import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.servlet.http.Cookie;
@@ -80,18 +79,33 @@ public class UserController {
         return ResponseEntity.ok().body(userService.resetPassword(resetPasswordRequest));
     }
 
-    @PutMapping("/user/{uuid}/updatePassword")
+    @PutMapping("/user/uuid={uuid}/updatePassword")
     public ResponseEntity<User> updatePassword(
             @RequestBody UpdateUsersPasswordRequest usersPasswordRequest,
             @PathVariable UUID uuid) {
         return ResponseEntity.ok().body(userService.updateUsersPassword(usersPasswordRequest, uuid));
     }
 
-    @PutMapping("/user/{uuid}/updateUserData")
+    @PutMapping("/user/uuid={uuid}/updateUserData")
     public ResponseEntity<User> updateUserData(
             @RequestBody UpdateUserDataRequest updateUserDataRequest,
             @PathVariable UUID uuid) {
         return ResponseEntity.ok().body(userService.updateUsersData(updateUserDataRequest, uuid));
+    }
+
+    @PutMapping("/user/{uuid}/updateUserData")
+    public ResponseEntity<User> sendEmailToUser(
+            @RequestBody UpdateUserDataRequest updateUserDataRequest,
+            @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(userService.updateUsersData(updateUserDataRequest, uuid));
+    }
+
+    @PostMapping("/user/uuid={uuid}/sendMailFromUserData")
+    public ResponseEntity<SimpleMailMessage> sendMailFromUserData(
+            @Validated
+            @RequestBody EmailToUserRequest emailToUserRequest,
+            @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(userService.sendMailFromUserDetails(emailToUserRequest, uuid));
     }
 
     @PostMapping("/users/page={page}/size={size}")

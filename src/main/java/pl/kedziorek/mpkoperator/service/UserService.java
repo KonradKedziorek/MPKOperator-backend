@@ -1,11 +1,9 @@
 package pl.kedziorek.mpkoperator.service;
 
+import org.springframework.mail.SimpleMailMessage;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
-import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUserDataRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.ResetPasswordRequest;
-import pl.kedziorek.mpkoperator.domain.dto.request.UpdateUsersPasswordRequest;
+import pl.kedziorek.mpkoperator.domain.dto.request.*;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 
 import java.util.Map;
@@ -22,5 +20,6 @@ public interface UserService<T> {
     User resetPassword(ResetPasswordRequest resetPasswordRequest);
     User updateUsersPassword(UpdateUsersPasswordRequest passwordRequest, UUID uuid);
     User updateUsersData(UpdateUserDataRequest updateUserDataRequest, UUID uuid);
+    SimpleMailMessage sendMailFromUserDetails(EmailToUserRequest emailToUserRequest, UUID uuid);
     DataResponse<T> getUsers(Map<String, String> params, int page, int size);
 }

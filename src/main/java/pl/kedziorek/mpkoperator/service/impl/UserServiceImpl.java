@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -139,6 +140,13 @@ public class UserServiceImpl implements UserService<User> {
     }
 
     @Override
+    public SimpleMailMessage sendMailFromUserDetails(EmailToUserRequest emailToUserRequest, UUID uuid) {
+        emailService.sendMail(emailService.prepareMailToUserFromUserDetails(emailToUserRequest, uuid));
+
+        return  emailService.prepareMailToUserFromUserDetails(emailToUserRequest, uuid);
+    }
+
+    @Override
     public User updateUsersPassword(UpdateUsersPasswordRequest passwordRequest, UUID uuid) {
         User updatedUser = userRepository.findByUuid(uuid).orElseThrow(() ->
                 new ResourceNotFoundException("User not found in the database"));
@@ -236,8 +244,6 @@ public class UserServiceImpl implements UserService<User> {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
     }
-
-
 
 //    public void uploadUserImage(User user, MultipartFile multipartFile) throws IOException {
 //        if (multipartFile.getOriginalFilename() != null

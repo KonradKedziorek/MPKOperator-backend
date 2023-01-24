@@ -4,10 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
+import pl.kedziorek.mpkoperator.domain.User;
+import pl.kedziorek.mpkoperator.domain.dto.request.EmailToUserRequest;
+import pl.kedziorek.mpkoperator.repository.UserRepository;
 import pl.kedziorek.mpkoperator.service.EmailService;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +23,7 @@ import javax.transaction.Transactional;
 @Slf4j
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
+    private final UserRepository userRepository;
 
     @Override
     public void sendMail(SimpleMailMessage msg) {
@@ -76,6 +85,25 @@ public class EmailServiceImpl implements EmailService {
                 "You can change password in your account settings (and it is advised to do this as fast as you can!) \n\n" +
                 "With regards, \n" +
                 "MPKOperator");
+
+        return msg;
+    }
+
+    @Override
+    public SimpleMailMessage prepareMailToUserFromUserDetails(EmailToUserRequest emailToUserRequest, UUID uuid) {
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+
+        User userTo = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
+
+        User userFrom = userRepository.findByUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
+
+        msg.setTo(userTo.getEmail());
+        msg.setFrom(userFrom.getEmail());
+        msg.setSubject(emailToUserRequest.getSubject());
+        msg.setText(emailToUserRequest.getContent());
 
         return msg;
     }
