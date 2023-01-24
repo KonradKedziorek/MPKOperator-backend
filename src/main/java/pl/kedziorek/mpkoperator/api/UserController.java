@@ -68,10 +68,10 @@ public class UserController {
 //        return ResponseEntity.ok().body(userService.saveUser(user, multipartFile));
 //    }
 
- // TODO Nie wiem czy tu nie powinno byc put dla update bo nie przechodzi przez unique walidacje - spytac czarka
+//  TODO Nie wiem czy tu nie powinno byc put dla update bo nie przechodzi przez unique walidacje - spytac czarka
     @PostMapping("/user/save")
     public ResponseEntity<?> saveUser(@Valid @RequestBody UserRequest user) {
-        return ResponseEntity.ok().body(userService.saveUser(user));
+        return ResponseEntity.ok().body(userService.saveOrUpdateUser(user));
     }
 
     @PutMapping("/user/resetPassword")

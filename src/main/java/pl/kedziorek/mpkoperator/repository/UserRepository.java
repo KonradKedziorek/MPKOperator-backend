@@ -13,11 +13,13 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Optional<User> findByUuid(UUID uuid);
+    Optional<User> findByPesel(String pesel);
+    Optional<User> findByPhoneNumber(String phoneNUmber);
     Optional<User> findByEmail(String email);
     Boolean existsUserByUsername(String username);
-    Boolean existsUserByEmail(String email);
-    Boolean existsUserByPesel(String pesel);
-    Boolean existsUserByPhoneNumber(String pesel);
+    Boolean existsUserByEmailAndUuidIsNot(String email, UUID uuid);
+    Boolean existsUserByPeselAndUuidIsNot(String pesel, UUID uuid);
+    Boolean existsUserByPhoneNumberAndUuidIsNot(String phoneNumber, UUID uuid);
 
     @Query(value = "" +
             "SELECT u FROM User u " +

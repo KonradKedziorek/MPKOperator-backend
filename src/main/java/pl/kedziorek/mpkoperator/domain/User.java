@@ -120,7 +120,7 @@ public class User {
     public static User map(UserRequest userRequest, Set<Role> roles) {
         RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
         return User.builder()
-                .uuid(UUID.randomUUID())
+                .uuid(Objects.equals(userRequest.getUuid(), "") ? UUID.randomUUID() : UUID.fromString(userRequest.getUuid()))
                 .name(userRequest.getName())
                 .surname(userRequest.getSurname())
                 .email(userRequest.getEmail())

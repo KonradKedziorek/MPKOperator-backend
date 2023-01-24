@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface UserService<T> {
 //    User saveUser(CreateUserRequest user, MultipartFile multipartFile) throws IOException;
-//    User saveOrUpdateUser(UserRequest userRequest);
+    User saveOrUpdateUser(UserRequest userRequest);
     User saveUser(UserRequest user);
     Role saveRole(Role role);
     User findByUuid(UUID uuid);

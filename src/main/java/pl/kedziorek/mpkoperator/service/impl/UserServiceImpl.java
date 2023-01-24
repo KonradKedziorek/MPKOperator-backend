@@ -44,15 +44,15 @@ public class UserServiceImpl implements UserService<User> {
     private final AddressService addressService;
     private final UserImageRepository userImageRepository;
 
-//    @Override
-//    public User saveOrUpdateUser(UserRequest userRequest) {
-//        log.info("Saving new user to the database");
-//        //if uuid is null should create new object
-//        if (Objects.equals(userRequest.getUuid(), "")) {
-//            return saveUser(userRequest);
-//        }//else update existing object
-//        return editUser(userRequest);
-//    }
+    @Override
+    public User saveOrUpdateUser(UserRequest userRequest) {
+        log.info("Saving new user to the database");
+        //if uuid is null should create new object
+        if (Objects.equals(userRequest.getUuid(), "")) {
+            return saveUser(userRequest);
+        }//else update existing object
+        return editUser(userRequest);
+    }
 
     @Override
     @Valid
@@ -245,19 +245,19 @@ public class UserServiceImpl implements UserService<User> {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
     }
 
-//    public void uploadUserImage(User user, MultipartFile multipartFile) throws IOException {
-//        if (multipartFile.getOriginalFilename() != null
-//                && !StringUtils.cleanPath(multipartFile.getOriginalFilename()).contains("..")) {
-//            UserImage userImage = new UserImage();
-//            userImage.setBytes(multipartFile.getBytes());
-//            userImage.setName(multipartFile.getOriginalFilename());
-//            userImage.setUuid(UUID.randomUUID());
-//
-//            user.setUserImage(userImage);
-//            userRepository.save(user);
-//            userImageRepository.save(userImage);
-//        }
-//    }
+    public void uploadUserImage(User user, MultipartFile multipartFile) throws IOException {
+        if (multipartFile.getOriginalFilename() != null
+                && !StringUtils.cleanPath(multipartFile.getOriginalFilename()).contains("..")) {
+            UserImage userImage = new UserImage();
+            userImage.setBytes(multipartFile.getBytes());
+            userImage.setName(multipartFile.getOriginalFilename());
+            userImage.setUuid(UUID.randomUUID());
+
+            user.setUserImage(userImage);
+            userRepository.save(user);
+            userImageRepository.save(userImage);
+        }
+    }
 
     @Override
     public User findByUuid(UUID uuid) {
@@ -265,33 +265,33 @@ public class UserServiceImpl implements UserService<User> {
                 new ResourceNotFoundException("User not found in database"));
     }
 
-//    private User editUser(UserRequest userRequest) {
-//        User user = findByUuid(UUID.fromString(userRequest.getUuid()));
-//        var userRef = changePropertiesValue(userRequest, user);
-//        return userRepository.save(userRef);
-//    }
+    private User editUser(UserRequest userRequest) {
+        User user = findByUuid(UUID.fromString(userRequest.getUuid()));
+        var userRef = changePropertiesValue(userRequest, user);
+        return userRepository.save(userRef);
+    }
 
-//    private User changePropertiesValue(UserRequest userRequest, User user) {
-//        Set<Role> roles = roleService.getRolesByNames(userRequest.getRoles());
-//
-//        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
-//                userRequest.getCity(),
-//                userRequest.getPostcode(),
-//                userRequest.getStreet(),
-//                userRequest.getLocalNumber(),
-//                userRequest.getHouseNumber()
-//        );
-//
-//        user.setName(userRequest.getName());
-//        user.setSurname(userRequest.getSurname());
-//        user.setEmail(userRequest.getEmail());
-//        user.setPesel(userRequest.getPesel());
-//        user.setPhoneNumber(userRequest.getPhoneNumber());
-//        user.setAddress(address);
-//        user.setRoles(roles);
-//        user.setIsActive(userRequest.getIsActive());
-//        user.setModifiedAt(LocalDateTime.now());
-//        user.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-//        return user;
-//    }
+    private User changePropertiesValue(UserRequest userRequest, User user) {
+        Set<Role> roles = roleService.getRolesByNames(userRequest.getRoles());
+
+        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
+                userRequest.getCity(),
+                userRequest.getPostcode(),
+                userRequest.getStreet(),
+                userRequest.getLocalNumber(),
+                userRequest.getHouseNumber()
+        );
+
+        user.setName(userRequest.getName());
+        user.setSurname(userRequest.getSurname());
+        user.setEmail(userRequest.getEmail());
+        user.setPesel(userRequest.getPesel());
+        user.setPhoneNumber(userRequest.getPhoneNumber());
+        user.setAddress(address);
+        user.setRoles(roles);
+        user.setIsActive(userRequest.getIsActive());
+        user.setModifiedAt(LocalDateTime.now());
+        user.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        return user;
+    }
 }
