@@ -31,7 +31,6 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtUtils jwtUtils;
 
-
     @Override
     public AuthResponse authenticate(Credentials credentials) throws IllegalAccessException {
         User user = userService.getUser(credentials.getUsername());

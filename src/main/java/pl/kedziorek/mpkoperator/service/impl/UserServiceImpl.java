@@ -16,6 +16,7 @@ import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.*;
 import pl.kedziorek.mpkoperator.domain.dto.request.*;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
+import pl.kedziorek.mpkoperator.repository.BusRepository;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.repository.UserImageRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
@@ -43,16 +44,7 @@ public class UserServiceImpl implements UserService<User> {
     private final RoleService roleService;
     private final AddressService addressService;
     private final UserImageRepository userImageRepository;
-
-    @Override
-    public User saveOrUpdateUser(UserRequest userRequest) {
-        log.info("Saving new user to the database");
-        //if uuid is null should create new object
-        if (Objects.equals(userRequest.getUuid(), "")) {
-            return saveUser(userRequest);
-        }//else update existing object
-        return editUser(userRequest);
-    }
+    private final BusRepository busRepository;
 
     @Override
     @Valid
@@ -67,7 +59,11 @@ public class UserServiceImpl implements UserService<User> {
                 userRequest.getLocalNumber(),
                 userRequest.getHouseNumber()
         );
-        User user = User.map(userRequest, roles);
+
+        Bus bus = busRepository.findByBusNumber(Integer.parseInt(userRequest.getBusNumber()))
+                .orElseThrow(() -> new ResourceNotFoundException("Bus not found in the database!"));
+
+        User user = User.map(userRequest, roles, bus);
 
         String notEncodedPassword = user.getPassword();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -167,36 +163,36 @@ public class UserServiceImpl implements UserService<User> {
         return userRepository.save(updatedUser);
     }
 
-    @Override
-    public User updateUsersData(UpdateUserDataRequest updateUserDataRequest, UUID uuid) {
-        User updatedUser = userRepository.findByUuid(uuid).orElseThrow(() ->
-                new ResourceNotFoundException("User not found in the database"));
-
-        Set<Role> roles = roleService.getRolesByNames(updateUserDataRequest.getRoles());
-
-        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
-                updateUserDataRequest.getCity(),
-                updateUserDataRequest.getPostcode(),
-                updateUserDataRequest.getStreet(),
-                updateUserDataRequest.getLocalNumber(),
-                updateUserDataRequest.getHouseNumber()
-        );
-
-        log.info("Updating user's password with uuid: {} to the database", updatedUser.getUuid());
-        updatedUser.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
-        updatedUser.setModifiedAt(LocalDateTime.now());
-        updatedUser.setName(updateUserDataRequest.getName());
-        updatedUser.setSurname(updateUserDataRequest.getSurname());
-        updatedUser.setEmail(updateUserDataRequest.getEmail());
-        updatedUser.setPassword(passwordEncoder.encode(updateUserDataRequest.getPassword()));
-        updatedUser.setPesel(updateUserDataRequest.getPesel());
-        updatedUser.setPhoneNumber(updateUserDataRequest.getPhoneNumber());
-        updatedUser.setAddress(address);
-        updatedUser.setIsActive(updateUserDataRequest.getIsActive());
-        updatedUser.setRoles(roles);
-
-        return userRepository.save(updatedUser);
-    }
+//    @Override
+//    public User updateUsersData(UpdateUserDataRequest updateUserDataRequest, UUID uuid) {
+//        User updatedUser = userRepository.findByUuid(uuid).orElseThrow(() ->
+//                new ResourceNotFoundException("User not found in the database"));
+//
+//        Set<Role> roles = roleService.getRolesByNames(updateUserDataRequest.getRoles());
+//
+//        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
+//                updateUserDataRequest.getCity(),
+//                updateUserDataRequest.getPostcode(),
+//                updateUserDataRequest.getStreet(),
+//                updateUserDataRequest.getLocalNumber(),
+//                updateUserDataRequest.getHouseNumber()
+//        );
+//
+//        log.info("Updating user's password with uuid: {} to the database", updatedUser.getUuid());
+//        updatedUser.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+//        updatedUser.setModifiedAt(LocalDateTime.now());
+//        updatedUser.setName(updateUserDataRequest.getName());
+//        updatedUser.setSurname(updateUserDataRequest.getSurname());
+//        updatedUser.setEmail(updateUserDataRequest.getEmail());
+//        updatedUser.setPassword(passwordEncoder.encode(updateUserDataRequest.getPassword()));
+//        updatedUser.setPesel(updateUserDataRequest.getPesel());
+//        updatedUser.setPhoneNumber(updateUserDataRequest.getPhoneNumber());
+//        updatedUser.setAddress(address);
+//        updatedUser.setIsActive(updateUserDataRequest.getIsActive());
+//        updatedUser.setRoles(roles);
+//
+//        return userRepository.save(updatedUser);
+//    }
 
     //TODO Change role method
 
@@ -265,31 +261,43 @@ public class UserServiceImpl implements UserService<User> {
                 new ResourceNotFoundException("User not found in database"));
     }
 
-    private User editUser(UserRequest userRequest) {
-        User user = findByUuid(UUID.fromString(userRequest.getUuid()));
-        var userRef = changePropertiesValue(userRequest, user);
+    @Override
+    public User editUserDataByAdmin(UpdateUserDataByAdminRequest updateUserDataByAdminRequest, UUID uuid) {
+        User user = findByUuid(uuid);
+        var userRef = changePropertiesValue(updateUserDataByAdminRequest, user);
         return userRepository.save(userRef);
     }
 
-    private User changePropertiesValue(UserRequest userRequest, User user) {
-        Set<Role> roles = roleService.getRolesByNames(userRequest.getRoles());
+    private User changePropertiesValue(UpdateUserDataByAdminRequest updateUserDataByAdminRequest, User user) {
+        Set<Role> roles = roleService.getRolesByNames(updateUserDataByAdminRequest.getRoles());
 
         Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
-                userRequest.getCity(),
-                userRequest.getPostcode(),
-                userRequest.getStreet(),
-                userRequest.getLocalNumber(),
-                userRequest.getHouseNumber()
+                updateUserDataByAdminRequest.getCity(),
+                updateUserDataByAdminRequest.getPostcode(),
+                updateUserDataByAdminRequest.getStreet(),
+                updateUserDataByAdminRequest.getLocalNumber(),
+                updateUserDataByAdminRequest.getHouseNumber()
         );
 
-        user.setName(userRequest.getName());
-        user.setSurname(userRequest.getSurname());
-        user.setEmail(userRequest.getEmail());
-        user.setPesel(userRequest.getPesel());
-        user.setPhoneNumber(userRequest.getPhoneNumber());
+        user.setName(updateUserDataByAdminRequest.getName());
+        user.setSurname(updateUserDataByAdminRequest.getSurname());
+        user.setEmail(updateUserDataByAdminRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(updateUserDataByAdminRequest.getPassword()));
+        user.setPesel(updateUserDataByAdminRequest.getPesel());
+        user.setPhoneNumber(updateUserDataByAdminRequest.getPhoneNumber());
         user.setAddress(address);
         user.setRoles(roles);
-        user.setIsActive(userRequest.getIsActive());
+        user.setIsActive(updateUserDataByAdminRequest.getIsActive());
+
+        if (Objects.equals(updateUserDataByAdminRequest.getBusNumber(), "")) {
+            user.setBus(null);
+        } else {
+            Bus bus = busRepository.findByBusNumber(Integer.parseInt(updateUserDataByAdminRequest.getBusNumber()))
+                    .orElseThrow(() -> new ResourceNotFoundException("Bus not found in the database"));
+
+            user.setBus(bus);
+        }
+
         user.setModifiedAt(LocalDateTime.now());
         user.setModifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
         return user;

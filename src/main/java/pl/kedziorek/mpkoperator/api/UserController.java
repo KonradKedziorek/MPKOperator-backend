@@ -68,10 +68,9 @@ public class UserController {
 //        return ResponseEntity.ok().body(userService.saveUser(user, multipartFile));
 //    }
 
-//  TODO Nie wiem czy tu nie powinno byc put dla update bo nie przechodzi przez unique walidacje - spytac czarka
     @PostMapping("/user/save")
     public ResponseEntity<?> saveUser(@Valid @RequestBody UserRequest user) {
-        return ResponseEntity.ok().body(userService.saveOrUpdateUser(user));
+        return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
     @PutMapping("/user/resetPassword")
@@ -79,6 +78,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.resetPassword(resetPasswordRequest));
     }
 
+    //To metoda dla usera jak chce zmienic hasło
     @PutMapping("/user/uuid={uuid}/updatePassword")
     public ResponseEntity<User> updatePassword(
             @RequestBody UpdateUsersPasswordRequest usersPasswordRequest,
@@ -86,18 +86,12 @@ public class UserController {
         return ResponseEntity.ok().body(userService.updateUsersPassword(usersPasswordRequest, uuid));
     }
 
-    @PutMapping("/user/uuid={uuid}/updateUserData")
-    public ResponseEntity<User> updateUserData(
-            @RequestBody UpdateUserDataRequest updateUserDataRequest,
+    //To metoda do zmiany danych dostępna dla admina
+    @PutMapping("/user/uuid={uuid}/edit")
+    public ResponseEntity<User> editUserDataByAdmin(
+            @RequestBody UpdateUserDataByAdminRequest updateUserDataByAdminRequest,
             @PathVariable UUID uuid) {
-        return ResponseEntity.ok().body(userService.updateUsersData(updateUserDataRequest, uuid));
-    }
-
-    @PutMapping("/user/{uuid}/updateUserData")
-    public ResponseEntity<User> sendEmailToUser(
-            @RequestBody UpdateUserDataRequest updateUserDataRequest,
-            @PathVariable UUID uuid) {
-        return ResponseEntity.ok().body(userService.updateUsersData(updateUserDataRequest, uuid));
+        return ResponseEntity.ok().body(userService.editUserDataByAdmin(updateUserDataByAdminRequest, uuid));
     }
 
     @PostMapping("/user/uuid={uuid}/sendMailFromUserData")

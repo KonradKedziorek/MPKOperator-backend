@@ -117,7 +117,7 @@ public class User {
         return getClass().hashCode();
     }
 
-    public static User map(UserRequest userRequest, Set<Role> roles) {
+    public static User map(UserRequest userRequest, Set<Role> roles, Bus bus) {
         RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
         return User.builder()
                 .uuid(Objects.equals(userRequest.getUuid(), "") ? UUID.randomUUID() : UUID.fromString(userRequest.getUuid()))
@@ -130,6 +130,7 @@ public class User {
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
                 .createdAt(LocalDateTime.now())
                 .roles(roles)
+                .bus(bus)
                 .isActive(true)
                 .build();
     }

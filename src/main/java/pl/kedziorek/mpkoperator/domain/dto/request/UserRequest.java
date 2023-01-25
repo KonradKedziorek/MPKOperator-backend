@@ -56,5 +56,7 @@ public class UserRequest {
 
     private Boolean isActive;
 
+    private String busNumber;
+
     private Set<String> roles = new HashSet<>();
 }
