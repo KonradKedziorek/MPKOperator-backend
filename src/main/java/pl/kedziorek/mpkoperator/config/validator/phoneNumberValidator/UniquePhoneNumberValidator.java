@@ -20,14 +20,8 @@ public class UniquePhoneNumberValidator implements ConstraintValidator<UniquePho
     @Override
     public boolean isValid(String phoneNumber, ConstraintValidatorContext context) {
         try{
-            Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
-            if (user.isEmpty()) {
-                return true;
-            } else {
-                User newUser = user.get();
-                Boolean exist = userRepository.existsUserByPhoneNumberAndUuidIsNot(phoneNumber, newUser.getUuid());
-                return !exist;
-            }
+            boolean exists = userRepository.existsUserByPhoneNumber(phoneNumber);
+            return !exists;
         } catch (NullPointerException nullPointerException){
             return true;
         }

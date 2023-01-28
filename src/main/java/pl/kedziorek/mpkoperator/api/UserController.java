@@ -13,15 +13,13 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.config.JwtUtils;
+import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
 import pl.kedziorek.mpkoperator.domain.dto.Credentials;
 import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
 import pl.kedziorek.mpkoperator.domain.dto.request.*;
-import pl.kedziorek.mpkoperator.domain.dto.response.AuthResponse;
-import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
-import pl.kedziorek.mpkoperator.domain.dto.response.LoggedInResponse;
-import pl.kedziorek.mpkoperator.domain.dto.response.UserResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.*;
 import pl.kedziorek.mpkoperator.service.AuthService;
 import pl.kedziorek.mpkoperator.service.EmailService;
 import pl.kedziorek.mpkoperator.service.UserService;
@@ -36,6 +34,8 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static pl.kedziorek.mpkoperator.domain.Complaint.mapToComplaintDetailsResponse;
+import static pl.kedziorek.mpkoperator.domain.User.mapToUserDetailsResponse;
 import static pl.kedziorek.mpkoperator.utils.CookieUtils.buildCookie;
 
 @RestController
@@ -100,6 +100,13 @@ public class UserController {
             @RequestBody EmailToUserRequest emailToUserRequest,
             @PathVariable UUID uuid) {
         return ResponseEntity.ok().body(userService.sendMailFromUserDetails(emailToUserRequest, uuid));
+    }
+
+    // pobranie detailsow usera - konkretnego (metoda dla admina i  usera zalogowanego na swoje konto)
+    @GetMapping("/user/uuid={uuid}")
+    public ResponseEntity<UserDetailsResponse> getUser(@PathVariable UUID uuid) {
+        User user = userService.findByUuid(uuid);
+        return ResponseEntity.ok().body(mapToUserDetailsResponse(user));
     }
 
     @PostMapping("/users/page={page}/size={size}")

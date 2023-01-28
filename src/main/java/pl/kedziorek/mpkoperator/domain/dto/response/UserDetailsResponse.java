@@ -23,6 +23,8 @@ public class UserDetailsResponse {
 
     private String phoneNumber;
 
+    private String pesel;
+
     private String createdBy;
 
     private LocalDateTime createdAt;
@@ -33,5 +35,13 @@ public class UserDetailsResponse {
 
     private Set<Role> roles;
 
-    private AddressResponse address;
+    private String city;
+
+    private String postcode;
+
+    private String street;
+
+    private String localNumber;
+
+    private String houseNumber;
 }

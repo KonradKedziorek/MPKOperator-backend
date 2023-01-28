@@ -279,12 +279,27 @@ public class UserServiceImpl implements UserService<User> {
                 updateUserDataByAdminRequest.getHouseNumber()
         );
 
+        if (userRepository.existsUserByEmail(updateUserDataByAdminRequest.getEmail())) {
+            throw new BadRequestException("User with that email already exist!");
+        } else {
+            user.setEmail(updateUserDataByAdminRequest.getEmail());
+        }
+
+        if (userRepository.existsUserByPhoneNumber(updateUserDataByAdminRequest.getPhoneNumber())) {
+            throw new BadRequestException("User with that phone number already exist!");
+        } else {
+            user.setPhoneNumber(updateUserDataByAdminRequest.getPhoneNumber());
+        }
+
+        if (userRepository.existsUserByPesel(updateUserDataByAdminRequest.getPesel())) {
+            throw new BadRequestException("User with that pesel already exist!");
+        } else {
+            user.setPesel(updateUserDataByAdminRequest.getPesel());
+        }
+
         user.setName(updateUserDataByAdminRequest.getName());
         user.setSurname(updateUserDataByAdminRequest.getSurname());
-        user.setEmail(updateUserDataByAdminRequest.getEmail());
         user.setPassword(passwordEncoder.encode(updateUserDataByAdminRequest.getPassword()));
-        user.setPesel(updateUserDataByAdminRequest.getPesel());
-        user.setPhoneNumber(updateUserDataByAdminRequest.getPhoneNumber());
         user.setAddress(address);
         user.setRoles(roles);
         user.setIsActive(updateUserDataByAdminRequest.getIsActive());

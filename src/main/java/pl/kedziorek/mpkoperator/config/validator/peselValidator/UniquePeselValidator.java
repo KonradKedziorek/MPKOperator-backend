@@ -20,14 +20,8 @@ public class UniquePeselValidator implements ConstraintValidator<UniquePesel,Str
     @Override
     public boolean isValid(String pesel, ConstraintValidatorContext context) {
         try{
-            Optional<User> user = userRepository.findByPesel(pesel);
-            if (user.isEmpty()) {
-                return true;
-            } else {
-                User newUser = user.get();
-                Boolean exist = userRepository.existsUserByPeselAndUuidIsNot(pesel, newUser.getUuid());
-                return !exist;
-            }
+            boolean exists = userRepository.existsUserByPesel(pesel);
+            return !exists;
         } catch (NullPointerException nullPointerException){
             return true;
         }
