@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.User;
+import pl.kedziorek.mpkoperator.domain.dto.request.ChangeUserRolesRequest;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
 import pl.kedziorek.mpkoperator.service.RoleService;
@@ -13,6 +14,8 @@ import pl.kedziorek.mpkoperator.service.RoleService;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +54,14 @@ public class RoleServiceImpl implements RoleService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Role %s not found in the database", roleName)));
         user.getRoles().add(role);
+    }
+
+    @Override
+    public User changeUserRoles(ChangeUserRolesRequest changeUserRolesRequest, UUID uuid) {
+        User user = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found in database"));
+        Set<Role> newRoles = roleRepository.findRolesByNameIn(changeUserRolesRequest.getRoles());
+        user.setRoles(newRoles);
+        return user;
     }
 }

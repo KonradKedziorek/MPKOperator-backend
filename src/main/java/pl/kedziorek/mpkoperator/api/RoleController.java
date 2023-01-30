@@ -4,13 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.kedziorek.mpkoperator.domain.Role;
 import pl.kedziorek.mpkoperator.domain.dto.RoleToUserDTO;
+import pl.kedziorek.mpkoperator.domain.dto.request.ChangeUserRolesRequest;
 import pl.kedziorek.mpkoperator.service.RoleService;
+
+import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -28,5 +29,12 @@ public class RoleController {
     public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserDTO form) {
         roleService.addRoleToUser(form.getUsername(), form.getRoleName());
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/user/uuid={uuid}/role/changeUserRoles")
+    public ResponseEntity<?> changeUserRoles(
+            @RequestBody ChangeUserRolesRequest changeUserRolesRequest,
+            @PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(roleService.changeUserRoles(changeUserRolesRequest, uuid));
     }
 }
