@@ -125,17 +125,6 @@ public class UserController {
         );
     }
 
-    @PostMapping("/role/save")
-    public ResponseEntity<Role> saveRole(@Validated @RequestBody Role role) {
-        return ResponseEntity.ok().body(userService.saveRole(role));
-    }
-
-    @PostMapping("/role/addtouser")
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserDTO form) {
-        userService.addRoleToUser(form.getUsername(), form.getRoleName());
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(AUTHORIZATION);

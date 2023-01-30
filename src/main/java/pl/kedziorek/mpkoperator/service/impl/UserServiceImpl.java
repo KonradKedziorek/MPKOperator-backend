@@ -194,15 +194,6 @@ public class UserServiceImpl implements UserService<User> {
 //        return userRepository.save(updatedUser);
 //    }
 
-    //TODO Change role method
-
-    //TODO przenieść to do role service
-    @Override
-    public Role saveRole(Role role) {
-        log.info("Saving new role {} to the database", role.getName());
-        return roleRepository.save(role);
-    }
-
     @Override
     public DataResponse<User> getUsers(Map<String, String> params, int page, int size) {
         Page<User> pageUser = userRepository.findAllParams(
@@ -220,18 +211,6 @@ public class UserServiceImpl implements UserService<User> {
                 .page(pageUser.getTotalPages())
                 .size(pageUser.getTotalElements())
                 .build();
-    }
-
-    @Override
-    public void addRoleToUser(String username, String roleName) {
-        log.info("Adding role {} to user {}", roleName, username);
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
-
-        Role role = roleRepository.findByName(roleName)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        String.format("Role %s not found in the database", roleName)));
-        user.getRoles().add(role);
     }
 
     @Override
