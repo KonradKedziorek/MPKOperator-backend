@@ -7,4 +7,6 @@ import java.io.IOException;
 
 public interface ScheduleService {
     Schedule saveDispatcherSchedule(MultipartFile multipartFile) throws IOException;
+    Schedule saveMechanicSchedule(MultipartFile multipartFile) throws IOException;
+    Schedule saveDriverSchedule(MultipartFile multipartFile) throws IOException;
 }

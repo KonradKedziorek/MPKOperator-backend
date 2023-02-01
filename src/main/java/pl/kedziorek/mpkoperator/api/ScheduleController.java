@@ -24,4 +24,16 @@ public class ScheduleController {
             @RequestParam(value = "dispatcherSchedule") MultipartFile multipartFile) throws IOException {
         return ResponseEntity.ok().body(scheduleService.saveDispatcherSchedule(multipartFile));
     }
+
+    @PostMapping("/driverSchedule/save")
+    public ResponseEntity<?> saveDriverSchedule(
+            @RequestParam(value = "driverSchedule") MultipartFile multipartFile) throws IOException {
+        return ResponseEntity.ok().body(scheduleService.saveDriverSchedule(multipartFile));
+    }
+
+    @PostMapping("/mechanicSchedule/save")
+    public ResponseEntity<?> saveMechanicSchedule(
+            @RequestParam(value = "mechanicSchedule") MultipartFile multipartFile) throws IOException {
+        return ResponseEntity.ok().body(scheduleService.saveMechanicSchedule(multipartFile));
+    }
 }

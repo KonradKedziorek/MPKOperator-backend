@@ -29,26 +29,76 @@ import java.util.UUID;
 public class ScheduleServiceImpl implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
-    @Value("${schedules.dir}")
-    private String schedulesDir;
+    @Value("${dispatcherSchedules.dir}")
+    private String dispatcherSchedulesDir;
+
+    @Value("${driverSchedules.dir}")
+    private String driverSchedulesDir;
+
+    @Value("${mechanicSchedules.dir}")
+    private String mechanicSchedulesDir;
 
     @Override
     public Schedule saveDispatcherSchedule(MultipartFile multipartFile) throws IOException {
-        log.info("Saving new schedule to the database");
+        log.info("Saving new dispatcher schedule to the database");
 
         Schedule schedule = new Schedule();
+
+        setStaticPropertiesOfSchedule(schedule);
+
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 
-        schedule.setUuid(UUID.randomUUID());
-        schedule.setDate(LocalDateTime.now());
         schedule.setName(ScheduleName.DISPATCHER_SCHEDULE + "_" + schedule.getDate() + "." + extension);
-        schedule.setScheduleDir(schedulesDir);
-        schedule.setCreatedAt(LocalDateTime.now());
-        schedule.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+        schedule.setScheduleDir(dispatcherSchedulesDir);
 
-        Path path = Paths.get(schedulesDir + File.separator + schedule.getUuid() + "." + extension);
+        Path path = Paths.get(dispatcherSchedulesDir + File.separator + schedule.getUuid() + "." + extension);
         Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
         return scheduleRepository.save(schedule);
+    }
+
+    @Override
+    public Schedule saveDriverSchedule(MultipartFile multipartFile) throws IOException {
+        log.info("Saving new driver schedule to the database");
+
+        Schedule schedule = new Schedule();
+
+        setStaticPropertiesOfSchedule(schedule);
+
+        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+
+        schedule.setName(ScheduleName.DRIVER_SCHEDULE + "_" + schedule.getDate() + "." + extension);
+        schedule.setScheduleDir(driverSchedulesDir);
+
+        Path path = Paths.get(driverSchedulesDir + File.separator + schedule.getUuid() + "." + extension);
+        Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+        return scheduleRepository.save(schedule);
+    }
+
+    @Override
+    public Schedule saveMechanicSchedule(MultipartFile multipartFile) throws IOException {
+        log.info("Saving new mechanic schedule to the database");
+
+        Schedule schedule = new Schedule();
+
+        setStaticPropertiesOfSchedule(schedule);
+
+        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+
+        schedule.setName(ScheduleName.MECHANIC_SCHEDULE + "_" + schedule.getDate() + "." + extension);
+        schedule.setScheduleDir(mechanicSchedulesDir);
+
+        Path path = Paths.get(mechanicSchedulesDir + File.separator + schedule.getUuid() + "." + extension);
+        Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+        return scheduleRepository.save(schedule);
+    }
+
+    private void setStaticPropertiesOfSchedule(Schedule schedule) {
+        schedule.setUuid(UUID.randomUUID());
+        schedule.setDate(LocalDateTime.now());
+        schedule.setCreatedAt(LocalDateTime.now());
+        schedule.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
     }
 }
