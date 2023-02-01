@@ -3,10 +3,7 @@ package pl.kedziorek.mpkoperator.api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.kedziorek.mpkoperator.service.ScheduleService;
 
@@ -35,5 +32,10 @@ public class ScheduleController {
     public ResponseEntity<?> saveMechanicSchedule(
             @RequestParam(value = "mechanicSchedule") MultipartFile multipartFile) throws IOException {
         return ResponseEntity.ok().body(scheduleService.saveMechanicSchedule(multipartFile));
+    }
+
+    @GetMapping("/schedules={name}")
+    public ResponseEntity<?> getSchedules(@PathVariable String name) {
+        return ResponseEntity.ok().body(scheduleService.getSchedulesByName(name));
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import pl.kedziorek.mpkoperator.domain.enums.ScheduleName;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

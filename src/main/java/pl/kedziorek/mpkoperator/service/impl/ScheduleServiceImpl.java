@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Schedule;
 import pl.kedziorek.mpkoperator.domain.enums.ScheduleName;
 import pl.kedziorek.mpkoperator.repository.ScheduleRepository;
@@ -20,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -100,5 +102,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         schedule.setDate(LocalDateTime.now());
         schedule.setCreatedAt(LocalDateTime.now());
         schedule.setCreatedBy(SecurityContextHolder.getContext().getAuthentication().getName());
+    }
+
+    @Override
+    public List<Schedule> getSchedulesByName(String name) {
+        return scheduleRepository.findSchedulesByNameOrderByDateDesc(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedules not found in database"));
     }
 }
