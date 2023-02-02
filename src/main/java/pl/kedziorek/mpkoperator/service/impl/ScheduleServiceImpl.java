@@ -51,9 +51,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 
         schedule.setName(ScheduleName.DISPATCHER_SCHEDULE + "_" + schedule.getDate() + "." + extension);
-        schedule.setScheduleDir(dispatcherSchedulesDir);
 
         Path path = Paths.get(dispatcherSchedulesDir + File.separator + schedule.getUuid() + "." + extension);
+
+        schedule.setScheduleDir(dispatcherSchedulesDir + "/" + schedule.getUuid() + "." + extension);
+
         Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
         return scheduleRepository.save(schedule);
@@ -70,9 +72,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 
         schedule.setName(ScheduleName.DRIVER_SCHEDULE + "_" + schedule.getDate() + "." + extension);
-        schedule.setScheduleDir(driverSchedulesDir);
 
         Path path = Paths.get(driverSchedulesDir + File.separator + schedule.getUuid() + "." + extension);
+
+        schedule.setScheduleDir(driverSchedulesDir + "/" + schedule.getUuid() + "." + extension);
+
         Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
         return scheduleRepository.save(schedule);
@@ -89,9 +93,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 
         schedule.setName(ScheduleName.MECHANIC_SCHEDULE + "_" + schedule.getDate() + "." + extension);
-        schedule.setScheduleDir(mechanicSchedulesDir);
 
         Path path = Paths.get(mechanicSchedulesDir + File.separator + schedule.getUuid() + "." + extension);
+
+        schedule.setScheduleDir(mechanicSchedulesDir);
+
         Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
         return scheduleRepository.save(schedule);

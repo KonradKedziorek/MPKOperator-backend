@@ -7,6 +7,7 @@ import pl.kedziorek.mpkoperator.domain.Schedule;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query(value = "" +
@@ -14,4 +15,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             "WHERE :name is null or s.name LIKE %:name% " +
             "ORDER BY s.date DESC")
     Optional<List<Schedule>> findSchedulesByNameOrderByDateDesc(@Param("name") String name);
+    Optional<Schedule> findByUuid(UUID uuid);
 }
