@@ -2,6 +2,7 @@ package pl.kedziorek.mpkoperator.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +40,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Value("${mechanicSchedules.dir}")
     private String mechanicSchedulesDir;
+
+    @Value("${schedules.dir}")
+    private String schedulesDir;
 
     @Override
     public Schedule saveDispatcherSchedule(MultipartFile multipartFile) throws IOException {
@@ -114,5 +118,62 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<Schedule> getSchedulesByName(String name) {
         return scheduleRepository.findSchedulesByNameOrderByDateDesc(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Schedules not found in database"));
+    }
+
+    @Override
+    public byte[] getSchedule(UUID uuid) throws IOException {
+        Schedule schedule = scheduleRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found in the database"));
+
+        String extension = schedule.getScheduleDir().subSequence(
+                schedule.getScheduleDir().indexOf('.'),
+                schedule.getScheduleDir().length()
+        ).toString();
+
+        String path;
+
+        if (schedule.getName().contains("DISPATCHER_SCHEDULE")) {
+            path = "/dispatcherSchedules/";
+        } else if (schedule.getName().contains("DRIVER_SCHEDULE")) {
+            path = "/driverSchedules/";
+        } else {
+            path = "/mechanicSchedules/";
+        }
+
+        File file = new File(schedulesDir + path + uuid.toString() + extension);
+        return FileUtils.readFileToByteArray(file);
+    }
+
+    //TODO Do zrobienia
+    @Override
+    public Schedule editSchedule(MultipartFile multipartFile, UUID uuid) throws IOException {
+        Schedule schedule = scheduleRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found in database"));
+
+        String nameStart;
+        String constPath = "src/main/resources/static";
+        String flexiblePath;
+
+        String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
+
+        if (schedule.getName().contains("DISPATCHER_SCHEDULE")) {
+            nameStart = "DISPATCHER_SCHEDULE";
+            flexiblePath = "/dispatcherSchedules";
+        } else if (schedule.getName().contains("DRIVER_SCHEDULE")) {
+            nameStart = "DRIVER_SCHEDULE";
+            flexiblePath = "/driverSchedules";
+        } else {
+            nameStart = "MECHANIC_SCHEDULE";
+            flexiblePath = "/mechanicSchedules";
+        }
+
+        String fullPath = constPath + flexiblePath;
+        schedule.setName(nameStart + "_" + schedule.getDate() + "." + extension);
+        schedule.setScheduleDir(fullPath + "/" + schedule.getUuid() + "." + extension);
+
+        Path path = Paths.get( fullPath + File.separator + schedule.getUuid() + "." + extension);
+        Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+        return scheduleRepository.save(schedule);
     }
 }

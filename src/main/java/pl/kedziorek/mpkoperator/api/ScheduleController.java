@@ -2,10 +2,12 @@ package pl.kedziorek.mpkoperator.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.cryptacular.io.ClassPathResource;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import pl.kedziorek.mpkoperator.domain.Schedule;
 import pl.kedziorek.mpkoperator.repository.ScheduleRepository;
 import pl.kedziorek.mpkoperator.service.ScheduleService;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
@@ -26,7 +29,6 @@ import java.util.UUID;
 public class ScheduleController {
     private final ScheduleService scheduleService;
     private final ScheduleRepository scheduleRepository;
-
 
     @PostMapping("/dispatcherSchedule/save")
     public ResponseEntity<?> saveDispatcherSchedule(
@@ -51,31 +53,18 @@ public class ScheduleController {
         return ResponseEntity.ok().body(scheduleService.getSchedulesByName(name));
     }
 
-    @GetMapping(
-            value = "/schedule/uuid={uuid}",
-            produces = MediaType.IMAGE_JPEG_VALUE
-    )
-    public @ResponseBody byte[] getSchedules(@PathVariable UUID uuid) throws IOException {
-        Schedule schedule = scheduleRepository.findByUuid(uuid)
-                .orElseThrow(() -> new ResourceNotFoundException("Schedule not found in the database"));
+    @GetMapping(value = "/schedule/uuid={uuid}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public @ResponseBody byte[] getSchedule(@PathVariable UUID uuid) throws IOException {
+        return scheduleService.getSchedule(uuid);
+    }
 
-        String extension = schedule.getScheduleDir().subSequence(
-                schedule.getScheduleDir().indexOf('.'),
-                schedule.getScheduleDir().length()
-        ).toString();
+    @PutMapping("/schedule/uuid={uuid}/edit")
+    public ResponseEntity<?> editSchedule(
+            @RequestParam(value = "editedSchedule") MultipartFile multipartFile,
+            @PathVariable UUID uuid
+            ) throws IOException {
 
-        String path;
 
-        if (schedule.getName().contains("DISPATCHER_SCHEDULE")) {
-            path = "/static/dispatcherSchedules/";
-        } else if (schedule.getName().contains("DRIVER_SCHEDULE")) {
-            path = "/static/driverSchedules/";
-        } else {
-            path = "/static/mechanicSchedules/";
-        }
-
-        InputStream in = getClass()
-                .getResourceAsStream( path + uuid.toString() + extension);
-        return IOUtils.toByteArray(in);
+        return ResponseEntity.ok().body(scheduleService.editSchedule(multipartFile, uuid));
     }
 }
