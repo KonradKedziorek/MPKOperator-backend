@@ -96,7 +96,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         Path path = Paths.get(mechanicSchedulesDir + File.separator + schedule.getUuid() + "." + extension);
 
-        schedule.setScheduleDir(mechanicSchedulesDir);
+        schedule.setScheduleDir(mechanicSchedulesDir + "/" + schedule.getUuid() + "." + extension);
 
         Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 

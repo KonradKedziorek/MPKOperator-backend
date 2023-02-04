@@ -2,6 +2,7 @@ package pl.kedziorek.mpkoperator.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -63,8 +64,18 @@ public class ScheduleController {
                 schedule.getScheduleDir().length()
         ).toString();
 
+        String path;
+
+        if (schedule.getName().contains("DISPATCHER_SCHEDULE")) {
+            path = "/static/dispatcherSchedules/";
+        } else if (schedule.getName().contains("DRIVER_SCHEDULE")) {
+            path = "/static/driverSchedules/";
+        } else {
+            path = "/static/mechanicSchedules/";
+        }
+
         InputStream in = getClass()
-                .getResourceAsStream("/static/dispatcherSchedules/" + uuid.toString() + extension);
+                .getResourceAsStream( path + uuid.toString() + extension);
         return IOUtils.toByteArray(in);
     }
 }
