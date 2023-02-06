@@ -20,7 +20,7 @@ public interface BusRepository extends JpaRepository<Bus, Long> {
             "SELECT b FROM Bus b " +
             "WHERE (cast(:busNumber as int) is null or b.busNumber = :busNumber) " +
             "AND (cast(:mileage as long) is null or b.mileage = :mileage) " +
-            "AND (:registrationNumber is null or b.registrationNumber LIKE %:registrationNumber%) " +
+            "AND (:registrationNumber is null or (upper(b.registrationNumber)) LIKE %:registrationNumber%) " +
             "AND (cast(:firstRegistrationDate as date) is null or b.firstRegistrationDate = :firstRegistrationDate) " +
             "AND (cast(:insuranceExpiryDate as date) is null or b.insuranceExpiryDate = :insuranceExpiryDate) " +
             "AND (cast(:serviceExpiryDate as date) is null or b.serviceExpiryDate = :serviceExpiryDate) " +

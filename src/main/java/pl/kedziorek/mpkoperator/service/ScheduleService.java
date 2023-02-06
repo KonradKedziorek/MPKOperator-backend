@@ -14,4 +14,5 @@ public interface ScheduleService {
     Schedule editSchedule(MultipartFile multipartFile, UUID uuid) throws IOException;
     byte[] getSchedule(UUID uuid) throws IOException;
     List<Schedule> getSchedulesByName(String name);
+    Schedule deleteSchedule(UUID uuid) throws IOException;
 }

@@ -17,11 +17,11 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long> {
 
     @Query(value = "" +
             "SELECT c FROM Complaint c " +
-            "WHERE (:placeOfEvent is null or c.placeOfEvent LIKE %:placeOfEvent%) " +
-            "AND (:nameOfNotifier is null or c.nameOfNotifier LIKE %:nameOfNotifier%) " +
-            "AND (:surnameOfNotifier is null or c.surnameOfNotifier LIKE %:surnameOfNotifier%) " +
+            "WHERE (:placeOfEvent is null or (upper(c.placeOfEvent)) LIKE %:placeOfEvent%) " +
+            "AND (:nameOfNotifier is null or (upper(c.nameOfNotifier)) LIKE %:nameOfNotifier%) " +
+            "AND (:surnameOfNotifier is null or (upper(c.surnameOfNotifier)) LIKE %:surnameOfNotifier%) " +
             "AND (:peselOfNotifier is null or c.peselOfNotifier LIKE %:peselOfNotifier%) " +
-            "AND (:createdBy is null or c.createdBy LIKE %:createdBy%) " +
+            "AND (:createdBy is null or (upper(c.createdBy)) LIKE %:createdBy%) " +
             "AND (cast(:date as date) is null or c.date = :date) " +
             "AND (:complaintStatus is null or c.complaintStatus LIKE :complaintStatus) " +
             "ORDER BY c.createdAt DESC" +

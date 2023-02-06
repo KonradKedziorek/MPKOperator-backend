@@ -129,9 +129,9 @@ public class FaultServiceImpl implements FaultService<Fault> {
     @Override
     public DataResponse<Fault> getFaults(Map<String, String> params, int page, int size) {
         Page<Fault> pageFault = faultRepository.findAllParams(
-                params.get("placeOfEvent") == null ? "" : params.get("placeOfEvent"),
-                params.get("description") == null ? "" : params.get("description"),
-                params.get("createdBy") == null ? "" : params.get("createdBy"),
+                params.get("placeOfEvent") == null ? "" : params.get("placeOfEvent").toUpperCase(),
+                params.get("description") == null ? "" : params.get("description").toUpperCase(),
+                params.get("createdBy") == null ? "" : params.get("createdBy").toUpperCase(),
                 convertToInteger(params.get("busNumber")),
                 convertToLocalDate(params.get("date")),
                 params.get("faultStatus") != null ? FaultStatus.valueOf(params.get("faultStatus")) : null,

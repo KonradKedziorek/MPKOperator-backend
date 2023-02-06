@@ -70,11 +70,11 @@ public class ComplaintServiceImpl implements ComplaintService<Complaint> {
     @Override
     public DataResponse<Complaint> getComplaints(Map<String, String> params, int page, int size) {
       Page<Complaint> pageComplaint = complaintRepository.findAllParams(
-                params.get("placeOfEvent") == null ? "" : params.get("placeOfEvent"),
-                params.get("nameOfNotifier") == null ? "" : params.get("nameOfNotifier"),
-                params.get("surnameOfNotifier") == null ? "" : params.get("surnameOfNotifier"),
+                params.get("placeOfEvent") == null ? "" : params.get("placeOfEvent").toUpperCase(),
+                params.get("nameOfNotifier") == null ? "" : params.get("nameOfNotifier").toUpperCase(),
+                params.get("surnameOfNotifier") == null ? "" : params.get("surnameOfNotifier").toUpperCase(),
                 params.get("peselOfNotifier") == null ? "" : params.get("peselOfNotifier"),
-                params.get("createdBy") == null ? "" : params.get("createdBy"),
+                params.get("createdBy") == null ? "" : params.get("createdBy").toUpperCase(),
                 convertToLocalDate(params.get("date")),
                 params.get("complaintStatus") != null ? ComplaintStatus.valueOf(params.get("complaintStatus")) : null,
                 PageRequest.of(page, size)

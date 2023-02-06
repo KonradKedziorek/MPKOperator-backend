@@ -78,7 +78,7 @@ public class BusServiceImpl implements BusService {
         Page<Bus> pageBus = busRepository.findAllParams(
                 convertToInteger(params.get("busNumber")),  //  == null ? "" : params.get("busNumber")
                 convertToLong(params.get("mileage")),
-                params.get("registrationNumber") == null ? "" : params.get("registrationNumber"),
+                params.get("registrationNumber") == null ? "" : params.get("registrationNumber").toUpperCase(),
                 convertToLocalDate(params.get("firstRegistrationDate")),
                 convertToLocalDate(params.get("insuranceExpiryDate")),
                 convertToLocalDate(params.get("serviceExpiryDate")),

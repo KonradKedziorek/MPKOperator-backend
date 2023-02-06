@@ -197,10 +197,10 @@ public class UserServiceImpl implements UserService<User> {
     @Override
     public DataResponse<User> getUsers(Map<String, String> params, int page, int size) {
         Page<User> pageUser = userRepository.findAllParams(
-                params.get("name") == null ? "" : params.get("name"),
-                params.get("surname") == null ? "" : params.get("surname"),
-                params.get("username") == null ? "" : params.get("username"),
-                params.get("email") == null ? "" : params.get("email"),
+                params.get("name") == null ? "" : params.get("name").toUpperCase(),
+                params.get("surname") == null ? "" : params.get("surname").toUpperCase(),
+                params.get("username") == null ? "" : params.get("username").toUpperCase(),
+                params.get("email") == null ? "" : params.get("email").toUpperCase(),
                 params.get("pesel") == null ? "" : params.get("pesel"),
                 params.get("phoneNumber") == null ? "" : params.get("phoneNumber"),
                 PageRequest.of(page, size)

@@ -18,9 +18,9 @@ public interface FaultRepository extends JpaRepository<Fault, Long> {
 
     @Query(value = "" +
             "SELECT f FROM Fault f " +
-            "WHERE (:placeOfEvent is null or upper(f.placeOfEvent) LIKE %:placeOfEvent%) " +
-            "AND (:description is null or upper(f.description) LIKE %:description%) " +
-            "AND (:createdBy is null or upper(f.createdBy) LIKE %:createdBy%) " +
+            "WHERE (:placeOfEvent is null or (upper(f.placeOfEvent)) LIKE %:placeOfEvent%) " +
+            "AND (:description is null or (upper(f.description)) LIKE %:description%) " +
+            "AND (:createdBy is null or (upper(f.createdBy)) LIKE %:createdBy%) " +
             "AND (cast(:busNumber as int) is null or f.bus.busNumber = :busNumber) " +
             "AND (cast(:date as date) is null or f.date = :date) " +
             "AND (:faultStatus is null or f.faultStatus LIKE :faultStatus) " +

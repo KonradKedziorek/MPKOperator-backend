@@ -130,21 +130,10 @@ public class ScheduleServiceImpl implements ScheduleService {
                 schedule.getScheduleDir().length()
         ).toString();
 
-        String path;
-
-        if (schedule.getName().contains("DISPATCHER_SCHEDULE")) {
-            path = "/dispatcherSchedules/";
-        } else if (schedule.getName().contains("DRIVER_SCHEDULE")) {
-            path = "/driverSchedules/";
-        } else {
-            path = "/mechanicSchedules/";
-        }
-
-        File file = new File(schedulesDir + path + uuid.toString() + extension);
+        File file = getFileFromResources(uuid, schedule, extension);
         return FileUtils.readFileToByteArray(file);
     }
 
-    //TODO Do zrobienia
     @Override
     public Schedule editSchedule(MultipartFile multipartFile, UUID uuid) throws IOException {
         Schedule schedule = scheduleRepository.findByUuid(uuid)
@@ -175,5 +164,36 @@ public class ScheduleServiceImpl implements ScheduleService {
         Files.copy(multipartFile.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
         return scheduleRepository.save(schedule);
+    }
+
+    private String getExtensionFromString(String s) {
+        return s.subSequence(s.indexOf('.'), s.length()).toString();
+    }
+
+    @Override
+    public Schedule deleteSchedule(UUID uuid) throws IOException {
+        Schedule schedule = scheduleRepository.findByUuid(uuid)
+                .orElseThrow(() -> new ResourceNotFoundException("Schedule with uuid: {uuid} not found in database"));
+
+        String extension = getExtensionFromString(schedule.getScheduleDir());
+        File file = getFileFromResources(uuid, schedule, extension);
+
+        FileUtils.forceDelete(file);
+        scheduleRepository.delete(schedule);
+        return schedule;
+    }
+
+    private File getFileFromResources(UUID uuid, Schedule schedule, String extension) {
+        String path;
+
+        if (schedule.getName().contains("DISPATCHER_SCHEDULE")) {
+            path = "/dispatcherSchedules/";
+        } else if (schedule.getName().contains("DRIVER_SCHEDULE")) {
+            path = "/driverSchedules/";
+        } else {
+            path = "/mechanicSchedules/";
+        }
+
+        return new File(schedulesDir + path + uuid.toString() + extension);
     }
 }
