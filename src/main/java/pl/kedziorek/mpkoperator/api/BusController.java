@@ -39,7 +39,7 @@ public class BusController {
         return ResponseEntity.ok().body(mapToBusDetailsResponse(bus));
     }
 
-    @PostMapping("/bus/page={page}/size={size}")
+    @PostMapping("/buses/page={page}/size={size}")
     public ResponseEntity<?> getBuses(
             @PathVariable int page,
             @PathVariable int size,

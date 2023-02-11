@@ -15,7 +15,9 @@ import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.UniquePhon
 import pl.kedziorek.mpkoperator.config.validator.phoneNumberValidator.ValidPhoneNumber;
 import pl.kedziorek.mpkoperator.config.validator.usernameValidator.UniqueUsername;
 import pl.kedziorek.mpkoperator.domain.dto.request.UserRequest;
-import pl.kedziorek.mpkoperator.domain.dto.response.*;
+import pl.kedziorek.mpkoperator.domain.dto.response.UserBusResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.UserDetailsResponse;
+import pl.kedziorek.mpkoperator.domain.dto.response.UserResponse;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -25,8 +27,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-
-import static pl.kedziorek.mpkoperator.domain.Bus.mapBusToBusResponse;
 
 @Entity
 @Getter
@@ -168,6 +168,7 @@ public class User {
                 .modifiedBy(user.getModifiedBy())
                 .modifiedAt(user.getModifiedAt())
                 .roles(user.getRoles())
+                .isActive(user.getIsActive())
                 .city(user.getAddress().getCity())
                 .postcode(user.getAddress().getPostcode())
                 .street(user.getAddress().getStreet())

@@ -5,11 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
+import pl.kedziorek.mpkoperator.domain.Complaint;
 import pl.kedziorek.mpkoperator.domain.Schedule;
+import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
+import pl.kedziorek.mpkoperator.domain.enums.ComplaintStatus;
 import pl.kedziorek.mpkoperator.domain.enums.ScheduleName;
 import pl.kedziorek.mpkoperator.repository.ScheduleRepository;
 import pl.kedziorek.mpkoperator.service.ScheduleService;
@@ -23,7 +28,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static pl.kedziorek.mpkoperator.utils.LocalDateConverter.convertToLocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -118,6 +127,20 @@ public class ScheduleServiceImpl implements ScheduleService {
     public List<Schedule> getSchedulesByName(String name) {
         return scheduleRepository.findSchedulesByNameOrderByDateDesc(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Schedules not found in database"));
+    }
+
+    @Override
+    public DataResponse<Schedule> getSchedules(Map<String, String> params, int page, int size) {
+        Page<Schedule> pageSchedule = scheduleRepository.findAllParamsByName(
+                params.get("name") == null ? "" : params.get("name").toUpperCase(),
+                PageRequest.of(page, size)
+        );
+
+        return DataResponse.<Schedule>builder()
+                .data(pageSchedule.get().collect(Collectors.toList()))
+                .page(pageSchedule.getTotalPages())
+                .size(pageSchedule.getTotalElements())
+                .build();
     }
 
     @Override

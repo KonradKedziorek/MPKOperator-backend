@@ -35,6 +35,8 @@ public class UserDetailsResponse {
 
     private Set<Role> roles;
 
+    private Boolean isActive;
+
     private String city;
 
     private String postcode;

@@ -16,9 +16,27 @@ public class BusResponse {
 
     private Long mileage;
 
+    private Integer manufactureYear;
+
     private String registrationNumber;
 
     private LocalDate firstRegistrationDate;
+
+    private String brand;
+
+    private String model;
+
+    private String VIN;
+
+    private Integer maximumTotalMass;  // maksymalna masa całkowita
+
+    private Integer deadWeightLoad; // masa własna
+
+    private Double engineSize;  // pojemność silnika
+
+    private Integer numberOfSeating; // liczba miejsc siedzących
+
+    private Integer numberOfStandingRoom;
 
     private LocalDate insuranceExpiryDate;
 

@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.kedziorek.mpkoperator.repository.ScheduleRepository;
 import pl.kedziorek.mpkoperator.service.ScheduleService;
 
 import java.io.IOException;
