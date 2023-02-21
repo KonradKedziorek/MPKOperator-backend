@@ -98,7 +98,7 @@ public class EmailServiceImpl implements EmailService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
 
         User userFrom = userRepository.findByUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
+                .orElseThrow(() -> new ResourceNotFoundException("Logged in user not found in the database"));
 
         msg.setTo(userTo.getEmail());
         msg.setFrom(userFrom.getEmail());

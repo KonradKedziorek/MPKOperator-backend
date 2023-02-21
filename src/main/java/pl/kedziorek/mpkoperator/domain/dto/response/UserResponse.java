@@ -24,5 +24,7 @@ public class UserResponse {
 
     private Set<Role> roles;
 
+    //TODO Tu pododawac rzeczy
+
     private Boolean isActive;
 }

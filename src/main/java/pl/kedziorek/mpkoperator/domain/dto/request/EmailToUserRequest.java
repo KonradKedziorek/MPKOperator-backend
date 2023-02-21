@@ -11,6 +11,6 @@ public class EmailToUserRequest {
     @NotBlank(message = "Subject is mandatory!")
     private String subject;
 
-    @NotBlank(message = "Subject is mandatory!")
+    @NotBlank(message = "Content is mandatory!")
     private String content;
 }

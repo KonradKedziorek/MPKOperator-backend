@@ -135,6 +135,7 @@ public class User {
     }
 
     public static UserResponse responseMap(User user) {
+        //TODO ZMIENIC!!!!
         return UserResponse.builder()
                 .uuid(user.getUuid())
                 .name(user.getName())
@@ -160,6 +161,7 @@ public class User {
                 .uuid(user.getUuid())
                 .name(user.getName())
                 .surname(user.getSurname())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .pesel(user.getPesel())
