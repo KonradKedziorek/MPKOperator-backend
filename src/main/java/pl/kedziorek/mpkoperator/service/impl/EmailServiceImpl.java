@@ -8,13 +8,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
+import pl.kedziorek.mpkoperator.domain.EmailHistory;
 import pl.kedziorek.mpkoperator.domain.User;
 import pl.kedziorek.mpkoperator.domain.dto.request.EmailToUserRequest;
+import pl.kedziorek.mpkoperator.repository.EmailHistoryRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
 import pl.kedziorek.mpkoperator.service.EmailService;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -24,6 +27,7 @@ import java.util.UUID;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
     private final UserRepository userRepository;
+    private final EmailHistoryRepository emailHistoryRepository;
 
     @Override
     public void sendMail(SimpleMailMessage msg) {
@@ -46,8 +50,7 @@ public class EmailServiceImpl implements EmailService {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(email);
 
-        // TODO mail zmienic ewentualnie na jakis inzynierkowy juz
-        msg.setFrom("mpkOperator@email.com");
+        msg.setFrom("mpkoperator@outlook.com");
 
         msg.setSubject("MPKOperator account creating");
 
@@ -75,8 +78,7 @@ public class EmailServiceImpl implements EmailService {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(email);
 
-        // TODO mail zmienic ewentualnie na jakis inzynierkowy juz
-        msg.setFrom("mpkOperator@email.com");
+        msg.setFrom("mpkoperator@outlook.com");
 
         msg.setSubject("MPKOperator Password Reset");
 
@@ -97,13 +99,19 @@ public class EmailServiceImpl implements EmailService {
         User userTo = userRepository.findByUuid(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
 
-        User userFrom = userRepository.findByUsername((String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .orElseThrow(() -> new ResourceNotFoundException("Logged in user not found in the database"));
-
         msg.setTo(userTo.getEmail());
-        msg.setFrom(userFrom.getEmail());
+        msg.setFrom("mpkoperator@outlook.com");
         msg.setSubject(emailToUserRequest.getSubject());
         msg.setText(emailToUserRequest.getContent());
+
+        emailHistoryRepository.save(EmailHistory.builder()
+                .emailTo(userTo.getEmail())
+                .subject(emailToUserRequest.getSubject())
+                .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
+                .createdAt(LocalDateTime.now())
+                .build());
+
+        log.info("Saving email in emails history");
 
         return msg;
     }

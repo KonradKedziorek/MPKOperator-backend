@@ -25,8 +25,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //TODO Add uuid field
-
     @CreatedBy
     private String createdBy;
 

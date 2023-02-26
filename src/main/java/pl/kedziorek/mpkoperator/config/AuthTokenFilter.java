@@ -45,7 +45,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
     private String parseJwt(HttpServletRequest request) {
-        //TODO Wchodzi do filtra ale nie bierze z fronta cookiesow zapisanych w przegladarce
         Cookie[] cookies = request.getCookies();
         if(cookies==null){
             return null;

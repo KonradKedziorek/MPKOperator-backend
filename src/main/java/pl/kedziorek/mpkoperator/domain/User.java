@@ -98,11 +98,6 @@ public class User {
     // TODO operacje na userach musza byc na aktywnych userach!!!
     private Boolean isActive;
 
-//    @JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id")    to dodać jakby się coś zapętlało
-    @OneToOne(cascade = CascadeType.ALL) //To do usuwania kaskadowego więc nie wiadomo czy się przyda
-    @JoinColumn(name = "user_image_id", referencedColumnName = "id")
-    private UserImage userImage;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,7 +112,7 @@ public class User {
     }
 
     public static User map(UserRequest userRequest, Set<Role> roles, Bus bus) {
-        RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
+        RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 57).withinRange(65,90).withinRange(97,122).build();
         return User.builder()
                 .uuid(Objects.equals(userRequest.getUuid(), "") ? UUID.randomUUID() : UUID.fromString(userRequest.getUuid()))
                 .name(userRequest.getName())
@@ -135,14 +130,21 @@ public class User {
     }
 
     public static UserResponse responseMap(User user) {
-        //TODO ZMIENIC!!!!
         return UserResponse.builder()
                 .uuid(user.getUuid())
                 .name(user.getName())
                 .surname(user.getSurname())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .password(user.getPassword())
+                .pesel(user.getPesel())
                 .phoneNumber(user.getPhoneNumber())
+                .city(user.getAddress().getCity())
+                .postcode(user.getAddress().getPostcode())
+                .street(user.getAddress().getStreet())
+                .localNumber(user.getAddress().getLocalNumber())
+                .houseNumber(user.getAddress().getHouseNumber())
+                .busNumber(user.getBus() == null ? null : user.getBus().getBusNumber())
                 .roles(user.getRoles())
                 .isActive(user.getIsActive())
                 .build();

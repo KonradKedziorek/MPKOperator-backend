@@ -35,8 +35,7 @@ public class Bus {
     private Long id;
 
     private UUID uuid;
-    
-     //TODO Unique doddac
+
     private Integer busNumber;
 
     private Long mileage;

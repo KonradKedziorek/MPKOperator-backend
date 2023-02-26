@@ -9,8 +9,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import pl.kedziorek.mpkoperator.config.exception.BadRequestException;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.*;
@@ -18,7 +16,6 @@ import pl.kedziorek.mpkoperator.domain.dto.request.*;
 import pl.kedziorek.mpkoperator.domain.dto.response.DataResponse;
 import pl.kedziorek.mpkoperator.repository.BusRepository;
 import pl.kedziorek.mpkoperator.repository.RoleRepository;
-import pl.kedziorek.mpkoperator.repository.UserImageRepository;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
 import pl.kedziorek.mpkoperator.service.AddressService;
 import pl.kedziorek.mpkoperator.service.EmailService;
@@ -27,7 +24,6 @@ import pl.kedziorek.mpkoperator.service.UserService;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -43,7 +39,6 @@ public class UserServiceImpl implements UserService<User> {
     private final EmailService emailService;
     private final RoleService roleService;
     private final AddressService addressService;
-    private final UserImageRepository userImageRepository;
     private final BusRepository busRepository;
 
     @Override
@@ -85,43 +80,6 @@ public class UserServiceImpl implements UserService<User> {
         return user;
     }
 
-//    @Override
-//    @Valid
-//    public User saveUser(CreateUserRequest createUserRequest, MultipartFile multipartFile) throws IOException {
-//        log.info("Saving new user to the database");
-//        Set<Role> roles = roleService.getRolesByNames(createUserRequest.getRoles());
-//
-//        Address address = addressService.findFirstByCityAndPostcodeAndStreetAndLocalNumberAndHouseNumber(
-//                createUserRequest.getCity(),
-//                createUserRequest.getPostcode(),
-//                createUserRequest.getStreet(),
-//                createUserRequest.getLocalNumber(),
-//                createUserRequest.getHouseNumber()
-//        );
-//        User user = User.map(createUserRequest, roles);
-//
-//        String notEncodedPassword = user.getPassword();
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//        user.setAddress(address);
-//
-//        RandomStringGenerator randomStringGenerator = new RandomStringGenerator.Builder().withinRange(48, 125).build();
-//        user.setUsername(randomStringGenerator.generate(10));
-//
-//        uploadUserImage(user, multipartFile);
-//
-//        userRepository.save(user);
-//        user.setUsername((createUserRequest.getName() + "_" + createUserRequest.getSurname() + "_" + user.getId()).toLowerCase(Locale.ROOT));
-//
-//        emailService.sendMail(emailService.prepareInfoMailAboutCreatedAccount(
-//                user.getId(),
-//                createUserRequest.getEmail(),
-//                createUserRequest.getName(),
-//                notEncodedPassword,
-//                user.getCreatedBy()));
-//
-//        return user;
-//    }
-
     @Override
     public User resetPassword(ResetPasswordRequest resetPasswordRequest) {
         User user = userRepository.findByEmail(resetPasswordRequest.getEmail())
@@ -138,7 +96,6 @@ public class UserServiceImpl implements UserService<User> {
     @Override
     public SimpleMailMessage sendMailFromUserDetails(EmailToUserRequest emailToUserRequest, UUID uuid) {
         emailService.sendMail(emailService.prepareMailToUserFromUserDetails(emailToUserRequest, uuid));
-
         return  emailService.prepareMailToUserFromUserDetails(emailToUserRequest, uuid);
     }
 
@@ -218,20 +175,6 @@ public class UserServiceImpl implements UserService<User> {
         log.info("Fetching user {}", username);
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found in the database"));
-    }
-
-    public void uploadUserImage(User user, MultipartFile multipartFile) throws IOException {
-        if (multipartFile.getOriginalFilename() != null
-                && !StringUtils.cleanPath(multipartFile.getOriginalFilename()).contains("..")) {
-            UserImage userImage = new UserImage();
-            userImage.setBytes(multipartFile.getBytes());
-            userImage.setName(multipartFile.getOriginalFilename());
-            userImage.setUuid(UUID.randomUUID());
-
-            user.setUserImage(userImage);
-            userRepository.save(user);
-            userImageRepository.save(userImage);
-        }
     }
 
     @Override

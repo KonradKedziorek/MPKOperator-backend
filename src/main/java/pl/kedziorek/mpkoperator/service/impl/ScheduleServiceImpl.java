@@ -125,22 +125,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<Schedule> getSchedulesByName(String name) {
-        return scheduleRepository.findSchedulesByNameOrderByDateDesc(name)
+        return scheduleRepository.findSchedulesByNameOrderByDateDesc(name, LocalDateTime.now().minusMonths(12))
                 .orElseThrow(() -> new ResourceNotFoundException("Schedules not found in database"));
-    }
-
-    @Override
-    public DataResponse<Schedule> getSchedules(Map<String, String> params, int page, int size) {
-        Page<Schedule> pageSchedule = scheduleRepository.findAllParamsByName(
-                params.get("name") == null ? "" : params.get("name").toUpperCase(),
-                PageRequest.of(page, size)
-        );
-
-        return DataResponse.<Schedule>builder()
-                .data(pageSchedule.get().collect(Collectors.toList()))
-                .page(pageSchedule.getTotalPages())
-                .size(pageSchedule.getTotalElements())
-                .build();
     }
 
     @Override

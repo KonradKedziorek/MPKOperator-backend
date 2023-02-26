@@ -20,11 +20,25 @@ public class UserResponse {
 
     private String email;
 
+    private String password;
+
+    private String pesel;
+
     private String phoneNumber;
 
-    private Set<Role> roles;
+    private String city;
 
-    //TODO Tu pododawac rzeczy
+    private String postcode;
+
+    private String street;
+
+    private String localNumber;
+
+    private String houseNumber;
+
+    private Integer busNumber;
+
+    private Set<Role> roles;
 
     private Boolean isActive;
 }

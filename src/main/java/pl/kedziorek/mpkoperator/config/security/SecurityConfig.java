@@ -46,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth/**").permitAll();
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/schedules/name=DRIVER_SCHEDULE").hasRole("DRIVER");
 //              .antMatchers("/applications/**").hasRole("TRANSFER_MANAGER");
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
