@@ -1,10 +1,12 @@
 package pl.kedziorek.mpkoperator.config.validator.peselValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.kedziorek.mpkoperator.domain.User;
 import pl.kedziorek.mpkoperator.repository.UserRepository;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Optional;
 
 public class UniquePeselValidator implements ConstraintValidator<UniquePesel,String> {
     @Autowired
@@ -20,7 +22,7 @@ public class UniquePeselValidator implements ConstraintValidator<UniquePesel,Str
         try{
             boolean exists = userRepository.existsUserByPesel(pesel);
             return !exists;
-        }catch (NullPointerException nullPointerException){
+        } catch (NullPointerException nullPointerException){
             return true;
         }
     }

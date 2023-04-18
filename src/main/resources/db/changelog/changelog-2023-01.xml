@@ -1,0 +1,379 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="add_address_table" author="Konrad Kedziorek">
+        <createTable tableName="address">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="postcode" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="street" type="varchar(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="local_number" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="house_number" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_at" type="datetime" >
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-address-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="address"/>
+    </changeSet>
+
+    <changeSet id="add_modified_at_and_by_and_address_fields_in_user_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="modified_at" type="datetime">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="address_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_is_active_field_in_user_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="is_active" type="boolean" defaultValue="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_user_image_table" author="Konrad Kedziorek">
+        <createTable tableName="user_image">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="bytes" type="blob">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add_user_image_id_column_to_user_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="user_image_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-user-image-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="user_image"/>
+    </changeSet>
+
+    <changeSet  id="change-length-of-name-in-user-image" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="name"
+                newDataType="varchar(256)"
+                schemaName="public"
+                tableName="user_image"/>
+    </changeSet>
+
+    <changeSet id="add_bus_table" author="Konrad Kedziorek">
+        <createTable tableName="bus">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="busNumber" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="manufactureYear" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registrationNumber" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstRegistrationDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="brand" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VIN" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="maximumTotalMass" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deadWeightLoad" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="engineSize" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="numberOfSeating" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="numberOfStandingRoom" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="insuranceExpiryDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="serviceExpiryDate" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bus_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_at" type="datetime" >
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-bus-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="add_bus_id_column_to_user_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="user" >
+            <column name="bus_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_bus_id_column_to_fault_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="fault" >
+            <column name="bus_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="changing_column_bus_number_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="int"
+                       newColumnName="bus_number"
+                       oldColumnName="busNumber"
+                       schemaName="public"
+                       tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_manufacture_year_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="int"
+                      newColumnName="manufacture_year"
+                      oldColumnName="manufactureYear"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_registration_number_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="varchar(50)"
+                      newColumnName="registration_number"
+                      oldColumnName="registrationNumber"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_first_registration_date_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="datetime"
+                      newColumnName="first_registration_date"
+                      oldColumnName="firstRegistrationDate"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_maximum_total_mass_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="int"
+                      newColumnName="maximum_total_mass"
+                      oldColumnName="maximumTotalMass"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_dead_weight_load_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="int"
+                      newColumnName="dead_weight_load"
+                      oldColumnName="deadWeightLoad"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_engine_size_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="double"
+                      newColumnName="engine_size"
+                      oldColumnName="engineSize"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_number_of_seating_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="int"
+                      newColumnName="number_of_seating"
+                      oldColumnName="numberOfSeating"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_number_of_standing_room_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="int"
+                      newColumnName="number_of_standing_room"
+                      oldColumnName="numberOfStandingRoom"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_insurance_expiry_date_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="datetime"
+                      newColumnName="insurance_expiry_date"
+                      oldColumnName="insuranceExpiryDate"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="changing_column_service_expiry_date_name" author="Konrad Kedziorek">
+        <renameColumn columnDataType="datetime"
+                      newColumnName="service_expiry_date"
+                      oldColumnName="serviceExpiryDate"
+                      schemaName="public"
+                      tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="add_mileage_field_in_bus_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="bus" >
+            <column name="mileage" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet  id="change_data_type_of_first_registration_date_in_bus_table" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="first_registration_date"
+                newDataType="date"
+                schemaName="public"
+                tableName="bus"/>
+    </changeSet>
+
+    <changeSet  id="change_data_type_of_insurance_expiry_date_in_bus_table" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="insurance_expiry_date"
+                newDataType="date"
+                schemaName="public"
+                tableName="bus"/>
+    </changeSet>
+
+    <changeSet  id="change_data_type_of_service_expiry_date_in_bus_table" author="Konrad Kedziorek">
+        <modifyDataType
+                columnName="service_expiry_date"
+                newDataType="date"
+                schemaName="public"
+                tableName="bus"/>
+    </changeSet>
+
+    <changeSet id="add_bus_id_column_to_fault_history_table" author="Konrad Kedziorek">
+        <addColumn schemaName= "public" tableName="fault_history" >
+            <column name="bus_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_schedule_table" author="Konrad Kedziorek">
+        <createTable tableName="schedule">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="uuid" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="schedule_dir" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="modified_at" type="datetime" >
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="add-AutoIncrement-to-schedule-id" author="Konrad Kedziorek" >
+        <addAutoIncrement columnDataType="bigint"
+                          columnName="id"
+                          incrementBy="1"
+                          schemaName="public"
+                          tableName="schedule"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -20,7 +20,7 @@ public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail,Str
         try{
             boolean exists = userRepository.existsUserByEmail(email);
             return !exists;
-        }catch (NullPointerException nullPointerException){
+        } catch (NullPointerException nullPointerException){
             return true;
         }
     }

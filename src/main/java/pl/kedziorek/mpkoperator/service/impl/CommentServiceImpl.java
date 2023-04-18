@@ -7,12 +7,15 @@ import org.springframework.stereotype.Service;
 import pl.kedziorek.mpkoperator.config.exception.ResourceNotFoundException;
 import pl.kedziorek.mpkoperator.domain.Comment;
 import pl.kedziorek.mpkoperator.domain.Complaint;
+import pl.kedziorek.mpkoperator.domain.Fault;
 import pl.kedziorek.mpkoperator.repository.CommentRepository;
 import pl.kedziorek.mpkoperator.repository.ComplaintRepository;
+import pl.kedziorek.mpkoperator.repository.FaultRepository;
 import pl.kedziorek.mpkoperator.service.CommentService;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +26,7 @@ import java.util.UUID;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final ComplaintRepository complaintRepository;
+    private final FaultRepository faultRepository;
 
     @Override
     public Comment saveComment(Comment comment) {
@@ -33,11 +37,20 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Set<Comment> getAllCommentsOfComplaint(UUID uuid) {
+    public List<Comment> getAllCommentsOfComplaint(UUID uuid) {
         Complaint complaint = complaintRepository.findByUuid(uuid)
                 .orElseThrow(()-> new ResourceNotFoundException(
                         String.format("Complaint with uuid: %s not found in the database", uuid)
                 ));
         return complaint.getComments();
+    }
+
+    @Override
+    public List<Comment> getAllCommentsOfFault(UUID uuid) {
+        Fault fault = faultRepository.findByUuid(uuid)
+                .orElseThrow(()-> new ResourceNotFoundException(
+                        String.format("Fault with uuid: %s not found in the database", uuid)
+                ));
+        return fault.getComments();
     }
 }

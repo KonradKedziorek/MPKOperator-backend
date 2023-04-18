@@ -1,16 +1,18 @@
 package pl.kedziorek.mpkoperator.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 import pl.kedziorek.mpkoperator.config.validator.roleNameValidator.UniqueRoleName;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
 @Entity
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Table(name = "role", schema = "public")
 public class Role {
@@ -21,4 +23,17 @@ public class Role {
     @NotBlank(message = "Role name is mandatory")
     @UniqueRoleName(message = "This role already exist!")
     private String name;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Role role = (Role) o;
+        return id != null && Objects.equals(id, role.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

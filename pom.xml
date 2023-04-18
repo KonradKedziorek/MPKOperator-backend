@@ -20,9 +20,11 @@
         <spring-security-config.version>5.7.4</spring-security-config.version>
         <java-jwt.version>4.2.0</java-jwt.version>
         <junit-jupiter-params.version>5.9.1</junit-jupiter-params.version>
-<!--        <hibernate-validator.version>8.0.0.Final</hibernate-validator.version>-->
         <passay.version>1.1.0</passay.version>
         <spring-boot-starter-validation.version>2.7.5</spring-boot-starter-validation.version>
+        <spring-boot-starter-mail.version>2.5.6</spring-boot-starter-mail.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <commons-io.version>2.6</commons-io.version>
     </properties>
     <dependencies>
         <dependency>
@@ -99,8 +101,20 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.1</version>
+            <version>${jjwt.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>${spring-boot-starter-mail.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
